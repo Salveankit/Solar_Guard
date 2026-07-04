@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Explainable probable-cause, service-decision, impact, and ranked-queue sprint implemented.
+Technician assignment, OR-Tools route optimisation, and daily field-plan APIs implemented.
 The current development database is the approved disposable Neon/PostgreSQL database for
 this phase when `ALLOW_DEVELOPMENT_DB_TESTS=true` is explicitly configured.
 
@@ -62,12 +62,18 @@ this phase when `ALLOW_DEVELOPMENT_DB_TESTS=true` is explicitly configured.
   decisions and queue ranks.
 - Fleet summary, site list/detail, diagnostics, and filtered service-queue APIs now read the
   same persisted backend decisions.
+- OR-Tools routing consumes only persisted actionable field decisions, uses local Haversine
+  distance at a configured 30 km/h, and enforces technician skills, shifts, and visit limits.
+- Migration `20260704_0006_route_planning.py` persists routing jobs, plan audit totals,
+  ordered technician stops, naive baseline, and explicit unassigned reasons.
+- `POST /api/routes/optimize` and `GET /api/routes/latest` return separate field, remote,
+  and monitoring work lists.
 
 ## Verification
 
-- `uv run pytest tests/unit -q`: 54 passed.
+- `uv run pytest tests/unit -q`: 64 passed with 3 OR-Tools SWIG deprecation warnings.
 - `uv run ruff check .`: all checks passed.
-- Alembic explicit settings-driven verification: current revision `20260704_0005 (head)`.
+- Alembic explicit settings-driven verification: current revision `20260704_0006 (head)`.
 - Final analysis `RUN-CANDIDATE-QUALITY-FINAL`: 563 raw candidates, 13 consolidated
   outputs, 8 actionable incidents, 5 non-actionable diagnostics, and one duplicate
   overlap resolved.
@@ -80,6 +86,12 @@ this phase when `ALLOW_DEVELOPMENT_DB_TESTS=true` is explicitly configured.
   actionable recurring-obstruction decision using relative loss and secondary evidence.
 - ASGI checks returned 200 for fleet, sites, site detail, diagnostics, and service queue;
   an unknown site returned 404.
+- Route plan `RP-ae7e2d4a95d819028075bfa1` assigns four unique jobs and four unique stops:
+  TECH-01 handles MH-119 then MH-107; TECH-02 handles MH-105 then MH-109.
+- Naive and optimized closed-route distance are both 58.613 km because skill constraints
+  fix each two-stop group and reversing a two-stop closed tour has equal distance.
+- MH-121 and MH-124 remain outside field routing; three communication cases are remote,
+  and six cases remain in monitoring.
 - Scenario assertions pass for:
   - `MH-107`: sudden severe underperformance candidate;
   - `MH-119`: sudden severe underperformance candidate;
@@ -92,7 +104,6 @@ this phase when `ALLOW_DEVELOPMENT_DB_TESTS=true` is explicitly configured.
 
 ## Not Yet Implemented
 
-- Route optimisation.
 - Streamlit dashboard.
 - Report generation.
 

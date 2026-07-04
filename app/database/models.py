@@ -345,10 +345,29 @@ class ServiceJob(Base):
     earliest_visit: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     latest_visit: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     selected_for_route: Mapped[bool] = mapped_column(Boolean, default=False)
+    decision_id: Mapped[str | None] = mapped_column(
+        String(96), ForeignKey("service_decisions.decision_id"), unique=True
+    )
+    candidate_id: Mapped[str | None] = mapped_column(String(96), nullable=True)
+    latitude: Mapped[float | None] = mapped_column(Float, nullable=True)
+    longitude: Mapped[float | None] = mapped_column(Float, nullable=True)
+    priority_label: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    probable_issue: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    recommended_action: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    required_skills: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    recoverable_energy_kwh: Mapped[float | None] = mapped_column(Float, nullable=True)
+    recoverable_value_inr: Mapped[float | None] = mapped_column(Float, nullable=True)
 
 
 class RoutePlan(Base):
     __tablename__ = "route_plans"
+    __table_args__ = (
+        UniqueConstraint(
+            "analysis_run_id",
+            "plan_date",
+            name="uq_route_plan_analysis_date",
+        ),
+    )
 
     route_plan_id: Mapped[str] = mapped_column(String(64), primary_key=True)
     analysis_run_id: Mapped[str] = mapped_column(
@@ -359,10 +378,31 @@ class RoutePlan(Base):
     plan_date: Mapped[date] = mapped_column(Date)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     summary_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    optimisation_status: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    failure_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    total_eligible_jobs: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    assigned_jobs: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    unassigned_jobs: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    naive_distance_km: Mapped[float | None] = mapped_column(Float, nullable=True)
+    optimised_distance_km: Mapped[float | None] = mapped_column(Float, nullable=True)
+    distance_avoided_km: Mapped[float | None] = mapped_column(Float, nullable=True)
+    total_travel_duration_min: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    total_job_duration_min: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    total_recoverable_energy_kwh: Mapped[float | None] = mapped_column(Float, nullable=True)
+    total_recoverable_value_inr: Mapped[float | None] = mapped_column(Float, nullable=True)
+    naive_routes: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    unassigned_job_details: Mapped[list | None] = mapped_column(JSON, nullable=True)
 
 
 class RouteStop(Base):
     __tablename__ = "route_stops"
+    __table_args__ = (
+        UniqueConstraint(
+            "route_plan_id",
+            "decision_id",
+            name="uq_route_stop_plan_decision",
+        ),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     route_plan_id: Mapped[str] = mapped_column(
@@ -383,3 +423,16 @@ class RouteStop(Base):
         DateTime(timezone=True),
         nullable=True,
     )
+    decision_id: Mapped[str | None] = mapped_column(
+        String(96), ForeignKey("service_decisions.decision_id"), nullable=True
+    )
+    estimated_departure: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    travel_duration_min: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    job_duration_min: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    probable_issue: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    recommended_action: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    priority_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    priority_label: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    required_skills: Mapped[list | None] = mapped_column(JSON, nullable=True)

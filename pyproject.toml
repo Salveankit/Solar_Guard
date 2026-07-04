@@ -20,6 +20,7 @@ dependencies = [
     "scikit-learn>=1.9.0",
     "xgboost>=3.2.0",
     "joblib>=1.5.3",
+    "ortools>=9.12.0",
 ]
 
 [dependency-groups]
@@ -38,4 +39,3 @@ target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
-

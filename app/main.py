@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from app.api import analysis, data, health, operations
+from app.api import analysis, data, health, operations, routes
 from app.core.errors import DataValidationError, SolarGuardError
 
 
@@ -13,6 +13,7 @@ def create_app() -> FastAPI:
     app.include_router(data.router)
     app.include_router(analysis.router)
     app.include_router(operations.router)
+    app.include_router(routes.router)
 
     @app.exception_handler(DataValidationError)
     async def data_validation_exception_handler(

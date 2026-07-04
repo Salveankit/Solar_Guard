@@ -67,25 +67,6 @@ class AnalysisRepository:
         analysis_date: date | None = None,
     ) -> None:
         self.connection.execute(
-            text("DELETE FROM service_decisions WHERE analysis_run_id = :analysis_run_id"),
-            {"analysis_run_id": analysis_run_id},
-        )
-        self.connection.execute(
-            text("DELETE FROM incident_candidates WHERE analysis_run_id = :analysis_run_id"),
-            {"analysis_run_id": analysis_run_id},
-        )
-        self.connection.execute(
-            text(
-                "DELETE FROM expected_generation_results "
-                "WHERE analysis_run_id = :analysis_run_id"
-            ),
-            {"analysis_run_id": analysis_run_id},
-        )
-        self.connection.execute(
-            text("DELETE FROM site_diagnostics WHERE analysis_run_id = :analysis_run_id"),
-            {"analysis_run_id": analysis_run_id},
-        )
-        self.connection.execute(
             text(
                 """
                 DELETE FROM route_stops
@@ -104,6 +85,25 @@ class AnalysisRepository:
         )
         self.connection.execute(
             text("DELETE FROM route_plans WHERE analysis_run_id = :analysis_run_id"),
+            {"analysis_run_id": analysis_run_id},
+        )
+        self.connection.execute(
+            text("DELETE FROM service_decisions WHERE analysis_run_id = :analysis_run_id"),
+            {"analysis_run_id": analysis_run_id},
+        )
+        self.connection.execute(
+            text("DELETE FROM incident_candidates WHERE analysis_run_id = :analysis_run_id"),
+            {"analysis_run_id": analysis_run_id},
+        )
+        self.connection.execute(
+            text(
+                "DELETE FROM expected_generation_results "
+                "WHERE analysis_run_id = :analysis_run_id"
+            ),
+            {"analysis_run_id": analysis_run_id},
+        )
+        self.connection.execute(
+            text("DELETE FROM site_diagnostics WHERE analysis_run_id = :analysis_run_id"),
             {"analysis_run_id": analysis_run_id},
         )
         self.connection.execute(

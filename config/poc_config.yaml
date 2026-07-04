@@ -133,6 +133,13 @@ routing:
   maximum_visits_per_technician: 4
   average_speed_kmph: 30
   default_job_duration_min: 60
+  job_duration_minutes:
+    inverter_grid_interruption: 90
+    recurring_obstruction: 60
+    persistent_degradation: 90
+  drop_penalty_base: 100000
+  drop_penalty_priority_multiplier: 5000
+  solver_time_limit_seconds: 3
 
 validation:
   expected_telemetry_interval_minutes: 15

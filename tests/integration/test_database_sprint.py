@@ -86,7 +86,7 @@ def test_alembic_migration_application(migrated_engine) -> None:
     assert "sites" in tables
     assert "expected_generation_results" in tables
     assert "incident_candidates" in tables
-    assert revision == "20260704_0005"
+    assert revision == "20260704_0006"
 
 
 def test_schema_constraints_indexes_and_foreign_keys(migrated_engine) -> None:
