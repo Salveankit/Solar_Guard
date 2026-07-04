@@ -1,0 +1,31 @@
+site_id,site_name,capacity_kw,latitude,longitude,weather_zone,commissioning_date,inverter_vendor,inverter_model,panel_capacity_w,panel_count,tilt_degree,azimuth_degree,site_efficiency_factor,tariff_per_kwh,service_region,customer_type,warranty_end_date,cleaning_cost_inr,visit_cost_inr
+MH-101,Baner Residential Rooftop 101,5,18.570916,73.757023,PUNE_WEST,2022-07-29,Vendor-A,VA-SUN-5K,570,9,15.1,186.0,0.913,7.23,Pune West,residential,2027-07-29,630,810
+MH-102,Kothrud Residential Rooftop 102,10,18.556875,73.831057,PUNE_CENTRAL,2023-01-29,Vendor-C,VC-PRO-10K,555,18,21.5,191.4,0.878,8.76,Pune Central,residential,2028-01-29,760,870
+MH-103,Wakad Residential Rooftop 103,5,18.556206,73.739914,PUNE_WEST,2025-06-01,Vendor-B,VB-GRID-5K,545,9,18.8,192.2,0.947,8.59,Pune West,residential,2030-06-01,670,760
+MH-104,Hinjewadi Commercial Rooftop 104,15,18.557677,73.738453,PUNE_WEST,2024-04-01,Vendor-A,VA-MOD-15K,540,28,24.1,192.6,0.843,9.94,Pune West,commercial,2029-04-01,930,1160
+MH-105,Bavdhan Society Rooftop 105,20,18.553315,73.765616,PUNE_WEST,2024-03-28,Vendor-A,VA-MOD-20K,570,35,15.1,175.3,0.836,8.9,Pune West,society,2029-03-28,1340,1060
+MH-106,Magarpatta Residential Rooftop 106,3,18.536185,73.914043,PUNE_EAST,2023-05-30,Vendor-B,VB-GRID-3K,550,5,13.1,165.2,0.878,9.43,Pune East,residential,2028-05-30,620,700
+MH-107,Bibwewadi Residential Rooftop 107,5,18.53836,73.875989,PUNE_CENTRAL,2023-01-01,Vendor-B,VB-GRID-5K,535,9,25.8,170.6,0.897,8.27,Pune Central,residential,2028-01-01,630,790
+MH-108,Shivajinagar Residential Rooftop 108,3,18.546233,73.917332,PUNE_CENTRAL,2024-01-14,Vendor-A,VA-SUN-3K,555,5,15.4,178.6,0.906,9.2,Pune Central,residential,2029-01-14,620,720
+MH-109,Baner Residential Rooftop 109,5,18.603738,73.779947,PUNE_WEST,2025-05-27,Vendor-A,VA-SUN-5K,540,9,12.8,147.3,0.922,8.06,Pune West,residential,2030-05-27,640,790
+MH-110,Balewadi Residential Rooftop 110,5,18.593204,73.728717,PUNE_WEST,2025-04-19,Vendor-A,VA-SUN-5K,540,9,19.8,182.3,0.931,8.38,Pune West,residential,2030-04-19,680,740
+MH-111,Erandwane Residential Rooftop 111,5,18.502695,73.85469,PUNE_CENTRAL,2023-05-13,Vendor-B,VB-GRID-5K,540,9,11.8,173.7,0.934,8.96,Pune Central,residential,2028-05-13,690,760
+MH-112,Swargate Society Rooftop 112,20,18.500983,73.819361,PUNE_CENTRAL,2022-08-12,Vendor-A,VA-MOD-20K,535,37,10,168.1,0.918,8.62,Pune Central,society,2027-08-12,1060,1160
+MH-113,Bavdhan Commercial Rooftop 113,15,18.587911,73.732916,PUNE_WEST,2023-04-30,Vendor-A,VA-MOD-15K,570,26,25.6,179.9,0.978,9.58,Pune West,commercial,2028-04-30,1000,970
+MH-114,Bibwewadi Society Rooftop 114,10,18.510673,73.863254,PUNE_CENTRAL,2025-02-12,Vendor-B,VB-TRI-10K,570,18,13.7,220,0.87,9.65,Pune Central,society,2030-02-12,830,860
+MH-115,Shivajinagar Residential Rooftop 115,5,18.544208,73.866576,PUNE_CENTRAL,2022-05-20,Vendor-C,VC-RES-5K,540,9,22.5,186.7,0.908,8.69,Pune Central,residential,2027-05-20,640,750
+MH-116,Sus Commercial Rooftop 116,15,18.563335,73.730541,PUNE_WEST,2023-06-28,Vendor-B,VB-TRI-15K,540,28,15.6,173.3,0.873,10.39,Pune West,commercial,2028-06-28,1050,1000
+MH-117,Deccan Residential Rooftop 117,10,18.528979,73.856432,PUNE_CENTRAL,2024-01-27,Vendor-A,VA-MOD-10K,555,18,17.1,217.1,0.953,7.71,Pune Central,residential,2029-01-27,820,920
+MH-118,Wagholi Residential Rooftop 118,5,18.529211,73.8689,PUNE_EAST,2025-02-07,Vendor-A,VA-SUN-5K,540,9,14.9,177.0,0.973,7.39,Pune East,residential,2030-02-07,650,760
+MH-119,Mundhwa Residential Rooftop 119,3,18.565954,73.925067,PUNE_EAST,2023-06-21,Vendor-C,VC-RES-3K,550,5,18.6,175.8,0.891,7.4,Pune East,residential,2028-06-21,600,740
+MH-120,Parvati Residential Rooftop 120,3,18.530481,73.882894,PUNE_CENTRAL,2024-01-17,Vendor-C,VC-RES-3K,540,6,18.9,175.8,0.904,9.25,Pune Central,residential,2029-01-17,620,750
+MH-121,Dhanori Residential Rooftop 121,7.5,18.576773,73.910973,PUNE_EAST,2022-12-29,Vendor-C,VC-PRO-8K,570,13,23.2,210.5,0.963,9.2,Pune East,residential,2027-12-29,690,880
+MH-122,Pashan Commercial Rooftop 122,20,18.524778,73.754807,PUNE_WEST,2023-04-01,Vendor-A,VA-MOD-20K,550,36,25.0,202.0,0.85,9.7,Pune West,commercial,2028-04-01,1310,1130
+MH-123,Kothrud Residential Rooftop 123,5,18.518908,73.86715,PUNE_CENTRAL,2022-02-26,Vendor-B,VB-GRID-5K,545,9,15.5,167.5,0.943,7.29,Pune Central,residential,2027-02-26,710,760
+MH-124,Hadapsar Society Rooftop 124,20,18.556777,73.91511,PUNE_EAST,2023-06-06,Vendor-C,VC-PRO-20K,535,37,23.0,164.2,0.93,8.11,Pune East,society,2028-06-06,1150,1190
+MH-125,Baner Residential Rooftop 125,3,18.521271,73.788568,PUNE_WEST,2023-09-26,Vendor-B,VB-GRID-3K,555,5,15.0,208.6,0.894,8.67,Pune West,residential,2028-09-26,590,740
+MH-126,Balewadi Residential Rooftop 126,7.5,18.551742,73.776692,PUNE_WEST,2023-03-07,Vendor-B,VB-TRI-8K,555,14,22.6,186.8,0.874,8.07,Pune West,residential,2028-03-07,760,870
+MH-127,Magarpatta Society Rooftop 127,20,18.563826,73.913633,PUNE_EAST,2023-04-27,Vendor-A,VA-MOD-20K,545,37,12.4,177.8,0.867,9.68,Pune East,society,2028-04-27,1080,1080
+MH-128,Bibwewadi Residential Rooftop 128,3,18.555355,73.822796,PUNE_CENTRAL,2023-05-15,Vendor-A,VA-SUN-3K,570,5,20.9,173.8,0.861,7.37,Pune Central,residential,2028-05-15,610,750
+MH-129,Shivajinagar Residential Rooftop 129,7.5,18.512203,73.827194,PUNE_CENTRAL,2024-12-23,Vendor-C,VC-PRO-8K,540,14,19.8,176.0,0.926,9.47,Pune Central,residential,2029-12-23,760,910
+MH-130,Viman Nagar Residential Rooftop 130,7.5,18.578277,73.872955,PUNE_EAST,2025-07-29,Vendor-C,VC-PRO-8K,550,14,15.5,154.6,0.918,7.69,Pune East,residential,2030-07-29,790,850

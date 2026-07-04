@@ -1,0 +1,2 @@
+"""SolarGuard application package."""
+

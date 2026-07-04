@@ -1,0 +1,13 @@
+incident_id,site_id,fault_type,start_timestamp,end_timestamp,severity,injected_loss_pct,expected_action,expected_visit_required,notes
+INC-001,MH-103,COMMUNICATION,2026-06-09T10:00:00+05:30,2026-06-09T11:30:00+05:30,MEDIUM,0,REMOTE_CHECK,false,"Short data-logger outage; measured fields are null, not zero."
+INC-002,MH-112,COMMUNICATION,2026-06-07T08:00:00+05:30,2026-06-07T18:00:00+05:30,HIGH,0,REMOTE_CHECK,false,Long communication outage across most daylight hours.
+INC-003,MH-126,COMMUNICATION,2026-06-05T00:00:00+05:30,2026-06-07T23:45:00+05:30,MEDIUM,0,REMOTE_CHECK,false,Intermittent multi-day data loss: repeated missing blocks rather than continuous outage.
+INC-004,MH-107,SUDDEN_OUTAGE,2026-06-12T10:30:00+05:30,2026-06-12T15:15:00+05:30,HIGH,97,VISIT,true,Near-zero AC output under meaningful irradiance with GRID_UNDERVOLTAGE alarm.
+INC-005,MH-119,SUDDEN_OUTAGE,2026-06-11T11:00:00+05:30,2026-06-11T16:00:00+05:30,CRITICAL,99,VISIT,true,Near-zero production without an explicit alarm code.
+INC-006,MH-105,GRADUAL_DEGRADATION,2026-06-03T00:00:00+05:30,2026-06-13T23:45:00+05:30,HIGH,32,CLEANING,true,Loss ramps from about 5% to 32%; clear forecast supports cleaning economics.
+INC-007,MH-121,GRADUAL_DEGRADATION,2026-06-04T00:00:00+05:30,2026-06-13T23:45:00+05:30,MEDIUM,26,MONITOR,false,"Gradual underperformance, but rain is forecast in the site's weather zone."
+INC-008,MH-128,GRADUAL_DEGRADATION,2026-06-01T00:00:00+05:30,2026-06-13T23:45:00+05:30,HIGH,38,VISIT,true,"Strong progressive loss; inspect for vegetation, soiling, or component degradation."
+INC-009,MH-109,TIME_SPECIFIC,2026-06-06T00:00:00+05:30,2026-06-13T23:45:00+05:30,MEDIUM,42,VISIT,true,Repeated 09:00-11:15 underperformance resembling morning obstruction.
+INC-010,MH-124,TIME_SPECIFIC,2026-06-05T00:00:00+05:30,2026-06-13T23:45:00+05:30,MEDIUM,36,VISIT,true,Repeated 15:00-17:00 loss resembling afternoon shade.
+INC-011,MH-115,AMBIGUOUS,2026-06-10T00:00:00+05:30,2026-06-13T23:45:00+05:30,LOW,12,COLLECT_DATA,false,Mild loss combined with intermittent missing data; insufficient evidence.
+INC-012,MH-130,AMBIGUOUS,2026-06-12T00:00:00+05:30,2026-06-13T23:45:00+05:30,LOW,18,MONITOR,false,Short-lived decline during mixed weather; not enough persistence for a confident diagnosis.

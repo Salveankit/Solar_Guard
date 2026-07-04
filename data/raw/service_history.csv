@@ -1,0 +1,49 @@
+ticket_id,site_id,reported_at,complaint_type,complaint_severity,actual_fault,resolution,visit_cost_inr,technician_id,resolved_at,remote_resolution,repeat_complaint,sla_due_at
+TKT-1001,MH-124,2026-04-16T15:45:00+05:30,CLEANING,CRITICAL,Visible dust accumulation,Module cleaning completed,1090,TECH-01,2026-04-17T11:45:00+05:30,false,false,2026-04-16T23:45:00+05:30
+TKT-1002,MH-126,2026-02-23T15:00:00+05:30,LOW_GENERATION,MEDIUM,Vegetation-related shading,Obstruction removed and output rechecked,870,TECH-01,2026-02-26T05:00:00+05:30,false,true,2026-02-25T15:00:00+05:30
+TKT-1003,MH-129,2026-05-23T15:15:00+05:30,LOW_GENERATION,MEDIUM,Vegetation-related shading,Obstruction removed and output rechecked,810,TECH-02,2026-05-24T22:15:00+05:30,false,false,2026-05-25T15:15:00+05:30
+TKT-1004,MH-104,2026-02-23T15:15:00+05:30,LOW_GENERATION,HIGH,Vegetation-related shading,Obstruction removed and output rechecked,1160,TECH-02,2026-02-25T21:15:00+05:30,false,false,2026-02-24T15:15:00+05:30
+TKT-1005,MH-119,2026-01-24T09:00:00+05:30,OFFLINE,HIGH,Data logger lost Wi-Fi connectivity,Logger reconnected to customer router,0,,2026-01-24T12:00:00+05:30,true,false,2026-01-25T09:00:00+05:30
+TKT-1006,MH-109,2026-04-02T16:15:00+05:30,NO_DISPLAY,LOW,Display sleep mode,Customer guided through wake-up procedure,0,,2026-04-02T18:15:00+05:30,true,false,2026-04-05T16:15:00+05:30
+TKT-1007,MH-108,2026-01-16T12:45:00+05:30,CLEANING,CRITICAL,Cleaning request not yet economical,Visit deferred and monitoring continued,720,TECH-02,2026-01-17T23:45:00+05:30,false,false,2026-01-16T20:45:00+05:30
+TKT-1008,MH-123,2026-01-29T16:15:00+05:30,CLEANING,MEDIUM,Visible dust accumulation,Module cleaning completed,760,TECH-02,2026-02-01T07:15:00+05:30,false,false,2026-01-31T16:15:00+05:30
+TKT-1009,MH-108,2026-05-29T17:00:00+05:30,OFFLINE,HIGH,Data logger lost Wi-Fi connectivity,Logger reconnected to customer router,720,TECH-01,2026-06-01T01:00:00+05:30,false,false,2026-05-30T17:00:00+05:30
+TKT-1010,MH-121,2026-02-01T09:45:00+05:30,OFFLINE,MEDIUM,Data logger lost Wi-Fi connectivity,Logger reconnected to customer router,0,,2026-02-01T11:45:00+05:30,true,false,2026-02-03T09:45:00+05:30
+TKT-1011,MH-121,2026-05-07T11:00:00+05:30,OFFLINE,HIGH,Grid outage at site,Supply restored; inverter resumed automatically,0,,2026-05-07T21:00:00+05:30,true,false,2026-05-08T11:00:00+05:30
+TKT-1012,MH-116,2026-03-12T11:00:00+05:30,LOW_GENERATION,CRITICAL,Probable soiling on module surface,Modules cleaned and generation verified,900,TECH-01,2026-03-15T03:00:00+05:30,false,false,2026-03-12T19:00:00+05:30
+TKT-1013,MH-107,2026-03-31T15:15:00+05:30,LOW_GENERATION,MEDIUM,No fault found; weather-related reduction,Customer informed and ticket closed,890,TECH-01,2026-04-03T11:15:00+05:30,false,false,2026-04-02T15:15:00+05:30
+TKT-1014,MH-109,2026-02-09T10:00:00+05:30,OFFLINE,MEDIUM,Data logger lost Wi-Fi connectivity,Logger reconnected to customer router,0,,2026-02-09T16:00:00+05:30,true,false,2026-02-11T10:00:00+05:30
+TKT-1015,MH-101,2026-05-03T11:45:00+05:30,OFFLINE,MEDIUM,Grid outage at site,Supply restored; inverter resumed automatically,0,,2026-05-03T19:45:00+05:30,true,false,2026-05-05T11:45:00+05:30
+TKT-1016,MH-126,2026-02-09T11:15:00+05:30,CLEANING,HIGH,Visible dust accumulation,Module cleaning completed,770,TECH-01,2026-02-10T04:15:00+05:30,false,false,2026-02-10T11:15:00+05:30
+TKT-1017,MH-124,2026-05-30T13:45:00+05:30,LOW_GENERATION,HIGH,Vegetation-related shading,Obstruction removed and output rechecked,1090,TECH-01,2026-06-01T14:45:00+05:30,false,false,2026-05-31T13:45:00+05:30
+TKT-1018,MH-122,2026-04-08T12:15:00+05:30,LOW_GENERATION,LOW,No fault found; weather-related reduction,Customer informed and ticket closed,1130,TECH-01,2026-04-09T01:15:00+05:30,false,false,2026-04-11T12:15:00+05:30
+TKT-1019,MH-110,2026-02-22T15:00:00+05:30,LOW_GENERATION,HIGH,Loose DC connector,Connector reseated and string current verified,640,TECH-01,2026-02-25T04:00:00+05:30,false,false,2026-02-23T15:00:00+05:30
+TKT-1020,MH-108,2026-03-27T15:15:00+05:30,LOW_GENERATION,MEDIUM,Vegetation-related shading,Obstruction removed and output rechecked,720,TECH-02,2026-03-29T14:15:00+05:30,false,false,2026-03-29T15:15:00+05:30
+TKT-1021,MH-121,2026-05-06T14:15:00+05:30,LOW_GENERATION,MEDIUM,Probable soiling on module surface,Modules cleaned and generation verified,880,TECH-01,2026-05-07T22:15:00+05:30,false,false,2026-05-08T14:15:00+05:30
+TKT-1022,MH-118,2026-05-13T12:00:00+05:30,OTHER,LOW,Repeated grid over-voltage alarm,Grid voltage logged and escalation raised,760,TECH-02,2026-05-15T02:00:00+05:30,false,false,2026-05-16T12:00:00+05:30
+TKT-1023,MH-101,2026-01-07T16:15:00+05:30,LOW_GENERATION,HIGH,Loose DC connector,Connector reseated and string current verified,810,TECH-01,2026-01-10T02:15:00+05:30,false,false,2026-01-08T16:15:00+05:30
+TKT-1024,MH-111,2026-01-11T15:30:00+05:30,LOW_GENERATION,MEDIUM,Probable soiling on module surface,Modules cleaned and generation verified,760,TECH-02,2026-01-13T11:30:00+05:30,false,true,2026-01-13T15:30:00+05:30
+TKT-1025,MH-114,2026-03-15T17:15:00+05:30,LOW_GENERATION,LOW,Loose DC connector,Connector reseated and string current verified,960,TECH-02,2026-03-16T20:15:00+05:30,false,false,2026-03-18T17:15:00+05:30
+TKT-1026,MH-105,2026-03-30T12:15:00+05:30,NO_DISPLAY,HIGH,Loose auxiliary supply connection,Connection tightened,960,TECH-01,2026-04-01T01:15:00+05:30,false,true,2026-03-31T12:15:00+05:30
+TKT-1027,MH-108,2026-02-27T15:45:00+05:30,NO_DISPLAY,MEDIUM,Display sleep mode,Customer guided through wake-up procedure,0,,2026-02-27T19:45:00+05:30,true,false,2026-03-01T15:45:00+05:30
+TKT-1028,MH-121,2026-04-06T12:00:00+05:30,LOW_GENERATION,MEDIUM,No fault found; weather-related reduction,Customer informed and ticket closed,880,TECH-01,2026-04-09T02:00:00+05:30,false,false,2026-04-08T12:00:00+05:30
+TKT-1029,MH-124,2026-01-30T12:30:00+05:30,NO_DISPLAY,MEDIUM,Loose auxiliary supply connection,Connection tightened,0,,2026-01-30T18:30:00+05:30,true,false,2026-02-01T12:30:00+05:30
+TKT-1030,MH-113,2026-04-08T16:45:00+05:30,OTHER,HIGH,Customer reported unusual inverter noise,Cooling fan inspected; no fault found,970,TECH-02,2026-04-11T11:45:00+05:30,false,false,2026-04-09T16:45:00+05:30
+TKT-1031,MH-121,2026-05-16T09:15:00+05:30,OFFLINE,MEDIUM,Inverter communication timeout,Remote restart completed,0,,2026-05-16T18:15:00+05:30,true,false,2026-05-18T09:15:00+05:30
+TKT-1032,MH-114,2026-02-18T16:00:00+05:30,LOW_GENERATION,MEDIUM,Vegetation-related shading,Obstruction removed and output rechecked,760,TECH-02,2026-02-20T02:00:00+05:30,false,false,2026-02-20T16:00:00+05:30
+TKT-1033,MH-111,2026-04-09T14:15:00+05:30,CLEANING,LOW,Visible dust accumulation,Module cleaning completed,860,TECH-01,2026-04-12T10:15:00+05:30,false,false,2026-04-12T14:15:00+05:30
+TKT-1034,MH-102,2026-04-19T10:30:00+05:30,OFFLINE,MEDIUM,AC isolator tripped,Isolator reset after safety inspection,0,,2026-04-19T17:30:00+05:30,true,true,2026-04-21T10:30:00+05:30
+TKT-1035,MH-118,2026-05-26T11:45:00+05:30,CLEANING,MEDIUM,Bird droppings on lower module rows,Affected modules cleaned,860,TECH-01,2026-05-27T04:45:00+05:30,false,false,2026-05-28T11:45:00+05:30
+TKT-1036,MH-126,2026-02-13T15:00:00+05:30,CLEANING,MEDIUM,Cleaning request not yet economical,Visit deferred and monitoring continued,970,TECH-01,2026-02-15T21:00:00+05:30,false,true,2026-02-15T15:00:00+05:30
+TKT-1037,MH-124,2026-05-02T15:00:00+05:30,LOW_GENERATION,CRITICAL,Vegetation-related shading,Obstruction removed and output rechecked,1090,TECH-02,2026-05-04T22:00:00+05:30,false,false,2026-05-02T23:00:00+05:30
+TKT-1038,MH-104,2026-03-18T11:45:00+05:30,NO_DISPLAY,MEDIUM,Inverter display fault,Display module replacement recommended,1060,TECH-02,2026-03-20T22:45:00+05:30,false,false,2026-03-20T11:45:00+05:30
+TKT-1039,MH-116,2026-02-12T10:30:00+05:30,OFFLINE,LOW,AC isolator tripped,Isolator reset after safety inspection,0,,2026-02-12T19:30:00+05:30,true,false,2026-02-15T10:30:00+05:30
+TKT-1040,MH-116,2026-04-17T09:30:00+05:30,OFFLINE,MEDIUM,Inverter communication timeout,Remote restart completed,0,,2026-04-17T14:30:00+05:30,true,false,2026-04-19T09:30:00+05:30
+TKT-1041,MH-127,2026-05-13T10:15:00+05:30,LOW_GENERATION,MEDIUM,Loose DC connector,Connector reseated and string current verified,1180,TECH-02,2026-05-15T18:15:00+05:30,false,false,2026-05-15T10:15:00+05:30
+TKT-1042,MH-130,2026-04-20T13:15:00+05:30,LOW_GENERATION,MEDIUM,Loose DC connector,Connector reseated and string current verified,950,TECH-01,2026-04-21T17:15:00+05:30,false,false,2026-04-22T13:15:00+05:30
+TKT-1043,MH-107,2026-06-12T12:00:00+05:30,LOW_GENERATION,HIGH,,,,,,false,false,2026-06-13T12:00:00+05:30
+TKT-1044,MH-119,2026-06-11T13:15:00+05:30,OFFLINE,CRITICAL,,,,,,false,true,2026-06-11T21:15:00+05:30
+TKT-1045,MH-105,2026-06-11T09:30:00+05:30,LOW_GENERATION,MEDIUM,,,,,,false,false,2026-06-13T09:30:00+05:30
+TKT-1046,MH-121,2026-06-12T16:00:00+05:30,CLEANING,LOW,,,,,,false,false,2026-06-15T16:00:00+05:30
+TKT-1047,MH-109,2026-06-10T10:15:00+05:30,LOW_GENERATION,MEDIUM,,,,,,false,true,2026-06-12T10:15:00+05:30
+TKT-1048,MH-112,2026-06-07T10:00:00+05:30,OFFLINE,HIGH,Data logger lost Wi-Fi connectivity,Logger remotely reconnected,0,,2026-06-07T13:00:00+05:30,true,false,2026-06-08T10:00:00+05:30

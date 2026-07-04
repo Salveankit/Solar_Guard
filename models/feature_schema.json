@@ -1,0 +1,25 @@
+{
+  "feature_schema_version": "expected-generation-features-v3",
+  "feature_columns": [
+    "capacity_kw",
+    "site_efficiency_factor",
+    "tilt_degree",
+    "azimuth_degree",
+    "ghi_wm2",
+    "dni_wm2",
+    "dhi_wm2",
+    "temperature_c",
+    "cloud_cover_pct",
+    "wind_speed_ms",
+    "rainfall_mm",
+    "solar_elevation_degree",
+    "solar_azimuth_degree",
+    "daylight_indicator",
+    "temperature_adjusted_irradiance",
+    "clear_sky_index",
+    "hour_sin",
+    "hour_cos",
+    "day_of_year_sin",
+    "day_of_year_cos"
+  ]
+}

@@ -1,0 +1,9 @@
+file_name,row_count,purpose
+site_master.csv,30,"Static site, asset, commercial, and location metadata"
+telemetry.csv,86400,15-minute inverter and generation telemetry
+weather_history.csv,8640,Shared historical weather by zone
+weather_forecast.csv,864,72-hour operational forecast
+service_history.csv,48,Resolved and open service-ticket history
+technicians.csv,2,"Technician skill, shift, and hub data"
+fault_ground_truth.csv,12,Evaluation-only injected incident truth
+scenario_validation_expected.csv,12,Expected POC scenario outcomes

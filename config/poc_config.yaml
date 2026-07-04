@@ -1,0 +1,89 @@
+metadata:
+  configuration_version: poc-v1
+  timezone: Asia/Kolkata
+  random_seed: 42
+
+paths:
+  raw_data_dir: data/raw
+
+analysis:
+  minimum_irradiance_wm2: 200
+  minimum_expected_generation_kwh: 0.05
+  minimum_expected_capacity_ratio: 0.20
+  normal_performance_ratio: 0.85
+  underperformance_ratio: 0.70
+  severe_underperformance_ratio: 0.35
+  near_zero_ratio: 0.05
+  outage_ratio: 0.05
+  persistence_intervals: 4
+  maximum_grouping_gap_intervals: 1
+  minimum_incident_duration_minutes: 60
+  minimum_incident_energy_loss_kwh: 2.0
+  incident_merge_window_minutes: 180
+  communication_merge_window_minutes: 360
+  calibration_warmup_days: 20
+  recurring_window_minimum_days: 3
+  recurring_window_minimum_energy_loss_kwh: 5.0
+  recurring_window_dominant_energy_loss_kwh: 20.0
+  recurring_window_maximum_outside_loss_ratio: 0.20
+  sudden_minimum_energy_loss_kwh: 2.0
+  sudden_near_zero_ratio: 0.10
+  persistent_minimum_days: 3
+  persistent_minimum_energy_loss_kwh: 5.0
+  persistent_maximum_average_ratio: 0.68
+  model_bias_recurring_days: 10
+  cloud_transition_ghi_ramp_wm2: 125
+  cloudy_candidate_maximum_average_ghi_wm2: 260
+  healthy_site_false_positive_target: 5
+  actionable_minimum_energy_loss_kwh: 10.0
+  candidate_overlap_minimum_ratio: 0.50
+  category_precedence:
+    - communication failure
+    - sudden severe underperformance
+    - morning time-window candidate
+    - afternoon time-window candidate
+    - recurring time-specific candidate
+    - persistent underperformance
+    - insufficient evidence
+  minimum_data_completeness: 0.80
+  communication_missing_intervals: 4
+  stale_telemetry_hours: 2
+
+modeling:
+  model_promotion_metric: normalised_mae
+  model_promotion_margin: 0.10
+  maximum_expected_generation_capacity_factor: 1.2
+  xgboost_parameters:
+    n_estimators: 30
+    max_depth: 4
+    learning_rate: 0.05
+    subsample: 0.85
+    colsample_bytree: 0.85
+    objective: reg:squarederror
+    tree_method: hist
+    random_state: 42
+    n_jobs: -1
+
+business:
+  default_energy_value_per_kwh: 8.0
+  default_visit_cost_inr: 800
+  default_cleaning_cost_inr: 750
+  cleaning_safety_margin: 1.20
+  significant_rain_mm: 2.0
+  recoverability_factor:
+    COMMUNICATION: 0.40
+    SUDDEN_PRODUCTION_OUTAGE: 0.75
+    SOILING_OR_GRADUAL_DEGRADATION: 0.65
+    TIME_DEPENDENT_SHADING_OR_OBSTRUCTION: 0.50
+    UNKNOWN_OR_INSUFFICIENT_EVIDENCE: 0.20
+
+routing:
+  maximum_visits_per_technician: 4
+  average_speed_kmph: 30
+  default_job_duration_min: 60
+
+validation:
+  expected_telemetry_interval_minutes: 15
+  telemetry_capacity_tolerance: 1.2
+  positive_night_generation_tolerance_kwh: 0.01
+  minimum_forecast_horizon_hours: 72

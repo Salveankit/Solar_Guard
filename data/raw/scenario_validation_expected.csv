@@ -1,0 +1,13 @@
+scenario_id,site_id,expected_issue_category,expected_action,expected_visit_required,minimum_expected_confidence,acceptance_note
+INC-001,MH-103,COMMUNICATION,REMOTE_CHECK,false,0.72,"Short data-logger outage; measured fields are null, not zero."
+INC-002,MH-112,COMMUNICATION,REMOTE_CHECK,false,0.72,Long communication outage across most daylight hours.
+INC-003,MH-126,COMMUNICATION,REMOTE_CHECK,false,0.72,Intermittent multi-day data loss: repeated missing blocks rather than continuous outage.
+INC-004,MH-107,SUDDEN_OUTAGE,VISIT,true,0.72,Near-zero AC output under meaningful irradiance with GRID_UNDERVOLTAGE alarm.
+INC-005,MH-119,SUDDEN_OUTAGE,VISIT,true,0.72,Near-zero production without an explicit alarm code.
+INC-006,MH-105,GRADUAL_DEGRADATION,CLEANING,true,0.58,Loss ramps from about 5% to 32%; clear forecast supports cleaning economics.
+INC-007,MH-121,GRADUAL_DEGRADATION,MONITOR,false,0.58,"Gradual underperformance, but rain is forecast in the site's weather zone."
+INC-008,MH-128,GRADUAL_DEGRADATION,VISIT,true,0.58,"Strong progressive loss; inspect for vegetation, soiling, or component degradation."
+INC-009,MH-109,TIME_SPECIFIC,VISIT,true,0.58,Repeated 09:00-11:15 underperformance resembling morning obstruction.
+INC-010,MH-124,TIME_SPECIFIC,VISIT,true,0.58,Repeated 15:00-17:00 loss resembling afternoon shade.
+INC-011,MH-115,AMBIGUOUS,COLLECT_DATA,false,0.0,Mild loss combined with intermittent missing data; insufficient evidence.
+INC-012,MH-130,AMBIGUOUS,MONITOR,false,0.0,Short-lived decline during mixed weather; not enough persistence for a confident diagnosis.

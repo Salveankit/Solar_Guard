@@ -1,0 +1,77 @@
+{
+  "seed": 42,
+  "history_start": "2026-05-15T00:00:00+05:30",
+  "history_end": "2026-06-13T23:45:00+05:30",
+  "forecast_start": "2026-06-14T00:00:00+05:30",
+  "forecast_end": "2026-06-16T23:45:00+05:30",
+  "row_counts": {
+    "site_master.csv": 30,
+    "telemetry.csv": 86400,
+    "weather_history.csv": 8640,
+    "weather_forecast.csv": 864,
+    "service_history.csv": 48,
+    "technicians.csv": 2,
+    "fault_ground_truth.csv": 12,
+    "scenario_validation_expected.csv": 12
+  },
+  "fleet_profile": {
+    "sites_by_customer_type": {
+      "residential": 21,
+      "commercial": 4,
+      "society": 5
+    },
+    "sites_by_weather_zone": {
+      "PUNE_WEST": 11,
+      "PUNE_CENTRAL": 12,
+      "PUNE_EAST": 7
+    },
+    "sites_by_capacity_kw": {
+      "3": 6,
+      "5": 9,
+      "7.5": 4,
+      "10": 3,
+      "15": 3,
+      "20": 5
+    },
+    "total_installed_capacity_kw": 268.0
+  },
+  "telemetry_profile": {
+    "received_rows": 86218,
+    "missing_rows": 182,
+    "benign_random_gap_rows": 55,
+    "source_quality_counts": {
+      "GOOD": 85995,
+      "SUSPECT": 223,
+      "MISSING": 182
+    },
+    "status_counts_received_rows": {
+      "STANDBY": 40207,
+      "RUNNING": 45970,
+      "FAULT": 41
+    }
+  },
+  "incident_profile": {
+    "COMMUNICATION": 3,
+    "SUDDEN_OUTAGE": 2,
+    "GRADUAL_DEGRADATION": 3,
+    "TIME_SPECIFIC": 2,
+    "AMBIGUOUS": 2
+  },
+  "service_profile": {
+    "ticket_count": 48,
+    "open_ticket_count": 5,
+    "remote_resolution_count": 13,
+    "repeat_complaint_count": 7
+  },
+  "quality_checks": {
+    "telemetry_unique_keys": true,
+    "telemetry_site_foreign_keys_valid": true,
+    "service_site_foreign_keys_valid": true,
+    "service_technician_foreign_keys_valid": true,
+    "weather_zone_foreign_keys_valid": true,
+    "missing_rows_have_blank_measurements": true,
+    "night_positive_generation_rows": 0,
+    "expected_telemetry_row_count": true,
+    "expected_weather_row_count": true
+  }
+}
