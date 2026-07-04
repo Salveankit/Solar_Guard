@@ -12,6 +12,7 @@ OWNED_TABLES = [
     "route_stops",
     "route_plans",
     "service_jobs",
+    "service_decisions",
     "incident_candidates",
     "expected_generation_results",
     "expected_model_runs",
@@ -65,6 +66,10 @@ class AnalysisRepository:
         model_version: str,
         analysis_date: date | None = None,
     ) -> None:
+        self.connection.execute(
+            text("DELETE FROM service_decisions WHERE analysis_run_id = :analysis_run_id"),
+            {"analysis_run_id": analysis_run_id},
+        )
         self.connection.execute(
             text("DELETE FROM incident_candidates WHERE analysis_run_id = :analysis_run_id"),
             {"analysis_run_id": analysis_run_id},

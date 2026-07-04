@@ -17,6 +17,7 @@ from app.services.model_training import (
     ExpectedModelTrainer,
     ModelArtifactCompatibilityError,
 )
+from app.services.service_decisions import ServiceDecisionService
 
 
 @dataclass(frozen=True)
@@ -41,6 +42,9 @@ class AnalysisRunSummary:
     incident_candidates: int
     communication_incidents: int
     insufficient_evidence_candidates: int
+    service_decisions: int
+    remote_actions: int
+    field_visits: int
     start_timestamp: str
     completion_timestamp: str
     split_summary: dict
@@ -119,6 +123,9 @@ class AnalysisOrchestrationService:
                 telemetry_frame,
             )
             self.analysis_repository.replace_incident_candidates(analysis_run_id, incidents)
+            decision_summary = ServiceDecisionService(self.connection, self.config).run(
+                analysis_run_id
+            )
             completed_at = datetime.now(tz=ZoneInfo("Asia/Kolkata"))
             summary = self._summary(
                 analysis_run_id,
@@ -127,6 +134,7 @@ class AnalysisOrchestrationService:
                 incidents,
                 started_at,
                 completed_at,
+                decision_summary,
             )
             self.analysis_repository.complete_analysis_run(analysis_run_id, summary.__dict__)
             return summary
@@ -174,6 +182,7 @@ class AnalysisOrchestrationService:
         incidents: pd.DataFrame,
         started_at: datetime,
         completed_at: datetime,
+        decision_summary,
     ) -> AnalysisRunSummary:
         anomaly_mask = expected_frame["anomaly_state"].isin(
             ["underperformance", "severe underperformance", "near-zero output"]
@@ -230,6 +239,9 @@ class AnalysisOrchestrationService:
             incident_candidates=actionable_candidates,
             communication_incidents=communication_incidents,
             insufficient_evidence_candidates=insufficient_evidence,
+            service_decisions=decision_summary.decisions,
+            remote_actions=decision_summary.remote_actions,
+            field_visits=decision_summary.field_visits,
             start_timestamp=started_at.isoformat(),
             completion_timestamp=completed_at.isoformat(),
             split_summary=training_result.split_summary,

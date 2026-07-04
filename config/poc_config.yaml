@@ -76,6 +76,58 @@ business:
     SOILING_OR_GRADUAL_DEGRADATION: 0.65
     TIME_DEPENDENT_SHADING_OR_OBSTRUCTION: 0.50
     UNKNOWN_OR_INSUFFICIENT_EVIDENCE: 0.20
+  reasoning:
+    confidence_weights:
+      pattern_strength: 25
+      persistence: 20
+      data_completeness: 15
+      telemetry_corroboration: 20
+      service_history_corroboration: 10
+      weather_stability: 10
+    confidence_labels:
+      medium: 40
+      high: 70
+      very_high: 85
+    contradiction_penalty: 15
+    high_confidence_threshold: 70
+    communication_escalation_minutes: 1440
+    outage_field_duration_minutes: 240
+    outage_field_minimum_loss_kwh: 8
+    severe_degradation_ratio: 0.35
+    cleaning_confidence_threshold: 60
+    recoverable_projection_days: 7
+    ongoing_incident_factor: 1.0
+    recent_service_days: 180
+    actionability:
+      minimum_absolute_loss_kwh: 10
+      minimum_loss_fraction: 0.25
+      minimum_loss_per_capacity_kwh: 0.25
+      minimum_duration_minutes: 180
+      minimum_confidence: 60
+      recurring_requires_secondary_evidence_below_absolute_threshold: true
+  priority:
+    weights:
+      recoverable_impact: 0.30
+      persistence: 0.20
+      diagnostic_confidence: 0.15
+      complaint_urgency: 0.15
+      sla_warranty_risk: 0.10
+      route_clustering_benefit: 0.10
+    maximum_recoverable_value_inr: 3000
+    maximum_recoverable_energy_per_capacity_kwh: 5
+    capacity_normalized_impact_weight: 0.70
+    maximum_persistence_minutes: 1440
+    persistence_reference_minutes:
+      communication: 360
+      outage: 240
+      persistent: 720
+      recurring: 1440
+      insufficient: 1440
+    neutral_route_score: 50
+    labels:
+      medium: 40
+      high: 70
+      critical: 85
 
 routing:
   maximum_visits_per_technician: 4

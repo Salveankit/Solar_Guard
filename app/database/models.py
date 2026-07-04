@@ -276,6 +276,58 @@ class IncidentCandidate(Base):
     actionable: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
 
 
+class ServiceDecision(Base):
+    __tablename__ = "service_decisions"
+    __table_args__ = (
+        UniqueConstraint(
+            "analysis_run_id",
+            "incident_candidate_id",
+            name="uq_service_decision_run_candidate",
+        ),
+    )
+
+    decision_id: Mapped[str] = mapped_column(String(96), primary_key=True)
+    analysis_run_id: Mapped[str] = mapped_column(
+        String(64), ForeignKey("analysis_runs.analysis_run_id"), index=True
+    )
+    incident_candidate_id: Mapped[str] = mapped_column(
+        String(96), ForeignKey("incident_candidates.incident_candidate_id")
+    )
+    site_id: Mapped[str] = mapped_column(String(16), ForeignKey("sites.site_id"), index=True)
+    probable_issue: Mapped[str] = mapped_column(String(128))
+    confidence_score: Mapped[float] = mapped_column(Float)
+    confidence_label: Mapped[str] = mapped_column(String(32))
+    supporting_evidence: Mapped[list] = mapped_column(JSON)
+    contradictory_evidence: Mapped[list] = mapped_column(JSON)
+    confidence_components: Mapped[dict] = mapped_column(JSON)
+    expected_energy_kwh: Mapped[float] = mapped_column(Float)
+    actual_energy_kwh: Mapped[float | None] = mapped_column(Float, nullable=True)
+    estimated_energy_loss_kwh: Mapped[float] = mapped_column(Float)
+    estimated_value_at_risk_inr: Mapped[float] = mapped_column(Float)
+    projected_seven_day_loss_kwh: Mapped[float] = mapped_column(Float)
+    estimated_recoverable_energy_kwh: Mapped[float] = mapped_column(Float)
+    estimated_recoverable_value_inr: Mapped[float] = mapped_column(Float)
+    tariff_per_kwh: Mapped[float] = mapped_column(Float)
+    visit_cost_inr: Mapped[float] = mapped_column(Float)
+    cleaning_cost_inr: Mapped[float] = mapped_column(Float)
+    cleaning_decision: Mapped[str] = mapped_column(String(32))
+    cleaning_reason: Mapped[str] = mapped_column(Text)
+    recommended_action: Mapped[str] = mapped_column(String(64))
+    action_reason: Mapped[str] = mapped_column(Text)
+    prerequisite_remote_checks: Mapped[list] = mapped_column(JSON)
+    escalation_condition: Mapped[str] = mapped_column(Text)
+    remote_action_available: Mapped[bool] = mapped_column(Boolean)
+    visit_required: Mapped[bool] = mapped_column(Boolean)
+    actionable: Mapped[bool] = mapped_column(Boolean, index=True)
+    complaint_severity: Mapped[str] = mapped_column(String(32))
+    sla_status: Mapped[str] = mapped_column(String(32))
+    priority_score: Mapped[float] = mapped_column(Float, index=True)
+    priority_label: Mapped[str] = mapped_column(String(32))
+    priority_components: Mapped[dict] = mapped_column(JSON)
+    queue_rank: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
 class ServiceJob(Base):
     __tablename__ = "service_jobs"
 

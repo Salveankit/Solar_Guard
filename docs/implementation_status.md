@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Expected-generation v2 and calibrated candidate-quality correction sprint implemented.
+Explainable probable-cause, service-decision, impact, and ranked-queue sprint implemented.
 The current development database is the approved disposable Neon/PostgreSQL database for
 this phase when `ALLOW_DEVELOPMENT_DB_TESTS=true` is explicitly configured.
 
@@ -54,16 +54,32 @@ this phase when `ALLOW_DEVELOPMENT_DB_TESTS=true` is explicitly configured.
   while retaining secondary evidence and non-duplicated energy loss.
 - Low-impact and insufficient-evidence diagnostics remain visible but are excluded from
   actionable incident counts.
+- Deterministic probable-cause reasoning now distinguishes detected patterns from probable
+  operational causes without a supervised fault classifier or LLM.
+- Component-based confidence, future recoverable impact, cleaning economics,
+  remote-versus-field decisions, and weighted priority scoring are persisted per candidate.
+- Migration `20260704_0005_service_decisions.py` adds idempotent candidate-level service
+  decisions and queue ranks.
+- Fleet summary, site list/detail, diagnostics, and filtered service-queue APIs now read the
+  same persisted backend decisions.
 
 ## Verification
 
-- `uv run pytest tests/unit -q`: 31 passed in 3.03s.
+- `uv run pytest tests/unit -q`: 54 passed.
 - `uv run ruff check .`: all checks passed.
-- Alembic explicit settings-driven verification: current revision `20260704_0004 (head)`.
+- Alembic explicit settings-driven verification: current revision `20260704_0005 (head)`.
 - Final analysis `RUN-CANDIDATE-QUALITY-FINAL`: 563 raw candidates, 13 consolidated
   outputs, 8 actionable incidents, 5 non-actionable diagnostics, and one duplicate
   overlap resolved.
 - Healthy-site actionable candidate count: zero.
+- Service-decision correction: 13 decisions, 9 actionable, 5 remote/monitor-first actions,
+  4 field visits, and 4 non-actionable monitoring states.
+- Sustained outages rank first and second using category-normalized persistence and
+  capacity-normalized recoverable impact. Neutral route benefit remains 50 for every row.
+- Rain-deferred MH-121 now uses monitor/reassess with no immediate visit. MH-124 is one
+  actionable recurring-obstruction decision using relative loss and secondary evidence.
+- ASGI checks returned 200 for fleet, sites, site detail, diagnostics, and service queue;
+  an unknown site returned 404.
 - Scenario assertions pass for:
   - `MH-107`: sudden severe underperformance candidate;
   - `MH-119`: sudden severe underperformance candidate;
@@ -76,10 +92,6 @@ this phase when `ALLOW_DEVELOPMENT_DB_TESTS=true` is explicitly configured.
 
 ## Not Yet Implemented
 
-- Probable-cause engine.
-- Cleaning economics.
-- Service priority scoring.
-- Ranked service queue.
 - Route optimisation.
 - Streamlit dashboard.
 - Report generation.
@@ -95,3 +107,6 @@ this phase when `ALLOW_DEVELOPMENT_DB_TESTS=true` is explicitly configured.
   run the scenario pipeline against Neon/PostgreSQL.
 - MH-111 retains a low-impact, monitor-only morning pattern. Its broad residual pattern
   and peer comparison indicate model/weather bias rather than an actionable site event.
+- FastAPI TestClient is unavailable because installed Starlette 1.3.1 requires `httpx2`;
+  neither `httpx` nor `httpx2` is installed. Direct ASGI verification is used without
+  adding an unproven dependency.
