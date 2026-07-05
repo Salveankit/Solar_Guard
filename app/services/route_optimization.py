@@ -29,6 +29,10 @@ class RoutingJob:
     recoverable_value_inr: float
     escalation_deadline: datetime | None
     earliest_service_time: datetime | None = None
+    queue_rank: int | None = None
+    confidence_score: float | None = None
+    estimated_energy_loss_kwh: float | None = None
+    escalation_condition: str | None = None
 
 
 @dataclass(frozen=True)

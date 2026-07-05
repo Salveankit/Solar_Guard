@@ -23,6 +23,15 @@ class Settings(BaseSettings):
     config_path: Path = Path("config/poc_config.yaml")
     raw_data_dir: Path | None = None
     api_version: str = "1.0.0"
+    frontend_origins: str = Field(
+        default=(
+            "http://localhost:5173,"
+            "http://127.0.0.1:5173,"
+            "http://localhost:8501,"
+            "http://127.0.0.1:8501"
+        ),
+        alias="FRONTEND_ORIGINS",
+    )
 
     @property
     def project_root(self) -> Path:
@@ -48,6 +57,10 @@ class Settings(BaseSettings):
             self.config.get("paths", {}).get("raw_data_dir", "data/raw")
         )
         return self._resolve_path(configured)
+
+    @property
+    def resolved_frontend_origins(self) -> list[str]:
+        return [origin.strip() for origin in self.frontend_origins.split(",") if origin.strip()]
 
     def _resolve_path(self, path: Path) -> Path:
         if path.is_absolute():

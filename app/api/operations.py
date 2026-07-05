@@ -14,6 +14,12 @@ def fleet_summary() -> dict:
         return OperationsQueryService(connection).fleet_summary()
 
 
+@router.get("/fleet/timeseries")
+def fleet_timeseries() -> dict:
+    with get_engine().connect() as connection:
+        return OperationsQueryService(connection).fleet_timeseries()
+
+
 @router.get("/sites")
 def list_sites() -> list[dict]:
     with get_engine().connect() as connection:

@@ -48,6 +48,16 @@ class OperationsQueryService:
             "estimated_recoverable_value_inr": round(
                 sum(item["estimated_recoverable_value_inr"] for item in actionable), 2
             ),
+            "top_priority_site_id": actionable[0]["site_id"] if actionable else None,
+        }
+
+    def fleet_timeseries(self) -> dict:
+        run_id, _decisions = self._latest()
+        if not run_id:
+            return {"analysis_run_id": "", "items": []}
+        return {
+            "analysis_run_id": run_id,
+            "items": self.repository.read_fleet_timeseries(run_id),
         }
 
     def sites(self) -> list[dict]:

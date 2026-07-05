@@ -38,7 +38,7 @@ class RouteRepository:
         rows = self.connection.execute(
             text(
                 """
-                SELECT technician_id, start_latitude, start_longitude,
+                SELECT technician_id, technician_name, start_latitude, start_longitude,
                        shift_start, shift_end, maximum_visits, skill_set, region, active
                 FROM technicians ORDER BY technician_id
                 """

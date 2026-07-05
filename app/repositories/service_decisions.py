@@ -197,3 +197,23 @@ class ServiceDecisionRepository:
             {"analysis_run_id": analysis_run_id, "site_id": site_id},
         ).mappings()
         return [dict(row) for row in rows]
+
+    def read_fleet_timeseries(self, analysis_run_id: str) -> list[dict]:
+        rows = self.connection.execute(
+            text(
+                """
+                SELECT
+                    date_trunc('hour', timestamp) AS timestamp,
+                    sum(expected_generation_kwh) AS expected_generation_kwh,
+                    sum(actual_generation_kwh) AS actual_generation_kwh,
+                    sum(energy_loss_kwh) AS energy_loss_kwh,
+                    avg(ghi_wm2) AS ghi_wm2
+                FROM expected_generation_results
+                WHERE analysis_run_id = :analysis_run_id
+                GROUP BY date_trunc('hour', timestamp)
+                ORDER BY timestamp
+                """
+            ),
+            {"analysis_run_id": analysis_run_id},
+        ).mappings()
+        return [dict(row) for row in rows]

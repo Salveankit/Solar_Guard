@@ -1,0 +1,1 @@
+"""SolarGuard Streamlit dashboard package."""

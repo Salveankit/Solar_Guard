@@ -49,6 +49,10 @@ class RoutePlanningService:
         plan = self.repository.latest_plan()
         return self._persisted_response(plan) if plan else None
 
+    def by_id(self, route_plan_id: str) -> dict | None:
+        plan = self.repository.read_plan(route_plan_id)
+        return self._persisted_response(plan) if plan else None
+
     def _response(
         self,
         plan_id: str,
@@ -57,16 +61,20 @@ class RoutePlanningService:
         result: dict,
     ) -> dict:
         work_lists = self.repository.read_work_lists(analysis_run_id)
+        technicians = self._technician_metadata()
         return {
             "route_plan_id": plan_id,
             "analysis_run_id": analysis_run_id,
             "planning_date": planning_date,
             "optimisation_status": result["optimisation_status"],
             "failure_reason": result["failure_reason"],
-            "field_plan": result["routes"],
+            "field_plan": [self._enrich_route(route, technicians) for route in result["routes"]],
             **work_lists,
             "unassigned_jobs": result["unassigned_jobs"],
             "naive_routes": result["naive_routes"],
+            "total_eligible_jobs": len(result["stops"]) + len(result["unassigned_jobs"]),
+            "assigned_jobs": len(result["stops"]),
+            "unassigned_jobs_count": len(result["unassigned_jobs"]),
             "naive_distance_km": result["naive_distance_km"],
             "optimised_distance_km": result["optimised_distance_km"],
             "distance_avoided_km": result["distance_avoided_km"],
@@ -78,12 +86,16 @@ class RoutePlanningService:
 
     def _persisted_response(self, plan: dict) -> dict:
         result = dict(plan.get("summary_json") or {})
-        return self._response(
+        response = self._response(
             plan["route_plan_id"],
             plan["analysis_run_id"],
             plan["plan_date"],
             result,
         )
+        response["total_eligible_jobs"] = plan.get("total_eligible_jobs")
+        response["assigned_jobs"] = plan.get("assigned_jobs")
+        response["unassigned_jobs_count"] = plan.get("unassigned_jobs")
+        return response
 
     def _job(self, row: dict, available_skills: set[str]) -> RoutingJob:
         required_skills, duration = self._requirements(row)
@@ -106,6 +118,14 @@ class RoutePlanningService:
             recoverable_value_inr=float(row["estimated_recoverable_value_inr"]),
             escalation_deadline=row.get("escalation_deadline"),
             earliest_service_time=None,
+            queue_rank=row.get("queue_rank"),
+            confidence_score=float(row["confidence_score"])
+            if row.get("confidence_score") is not None
+            else None,
+            estimated_energy_loss_kwh=float(row["estimated_energy_loss_kwh"])
+            if row.get("estimated_energy_loss_kwh") is not None
+            else None,
+            escalation_condition=row.get("escalation_condition"),
         )
 
     def _requirements(self, row: dict) -> tuple[tuple[str, ...], int]:
@@ -140,6 +160,23 @@ class RoutePlanningService:
             region=row["region"],
             active=bool(row["active"]),
         )
+
+    def _technician_metadata(self) -> dict[str, dict]:
+        rows = self.repository.read_technicians()
+        return {
+            row["technician_id"]: {
+                "technician_name": row.get("technician_name") or row["technician_id"],
+                "shift_start": str(row["shift_start"]),
+                "shift_end": str(row["shift_end"]),
+                "region": row["region"],
+            }
+            for row in rows
+        }
+
+    @staticmethod
+    def _enrich_route(route: dict, technicians: dict[str, dict]) -> dict:
+        metadata = technicians.get(route["technician_id"], {})
+        return {**route, **metadata}
 
     @staticmethod
     def _available_skills(rows: list[dict]) -> set[str]:
