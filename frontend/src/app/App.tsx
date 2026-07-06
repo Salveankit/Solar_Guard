@@ -7,20 +7,24 @@ import {
 } from "../hooks/useOperationsData";
 import { AppRoutes } from "./router";
 
-export const App = () => {
+const AppContent = () => {
   const shellStatus = useOperationsShellStatus();
   const refreshOperations = useRefreshOperations();
 
   return (
-    <BrowserRouter>
-      <AppShell
-        apiStatus={shellStatus.kind}
-        isRefreshing={shellStatus.isRefreshing}
-        lastUpdated={shellStatus.lastUpdated}
-        onRefresh={refreshOperations}
-      >
-        <AppRoutes />
-      </AppShell>
-    </BrowserRouter>
+    <AppShell
+      apiStatus={shellStatus.kind}
+      isRefreshing={shellStatus.isRefreshing}
+      lastUpdated={shellStatus.lastUpdated}
+      onRefresh={refreshOperations}
+    >
+      <AppRoutes />
+    </AppShell>
   );
 };
+
+export const App = () => (
+  <BrowserRouter>
+    <AppContent />
+  </BrowserRouter>
+);

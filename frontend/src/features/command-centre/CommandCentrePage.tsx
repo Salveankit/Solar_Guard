@@ -13,9 +13,11 @@ import {
   WarningOutlined,
 } from "@ant-design/icons";
 import { Button, Card, Space } from "antd";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { CircleMarker, MapContainer, Polyline, TileLayer, Tooltip, useMap } from "react-leaflet";
 import { Link, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import "leaflet/dist/leaflet.css";
 
 import heroImage from "../../assets/solar-hero-sunrise.png";
 import { EChart } from "../../components/charts/EChart";
@@ -32,7 +34,7 @@ import {
   useServiceQueue,
 } from "../../hooks/useOperationsData";
 import type { ServiceDecision } from "../../api/schemas/decisions";
-import type { LatestRoutePlan } from "../../api/schemas/routes";
+import type { LatestRoutePlan, RouteStop, TechnicianRoute } from "../../api/schemas/routes";
 import {
   formatInr,
   formatInteger,
@@ -83,12 +85,48 @@ const priorityClass = (priority: string): string =>
   `sg-badge priority-${priority.toLowerCase()}`;
 
 const routePreviewPalette = ["#43A7FF", "#F05A8A", "#2FD7A3", "#9A65F7"];
+type RoutePoint = [number, number];
+
+const serviceHubPosition: RoutePoint = [18.5204, 73.8567];
 
 const totalFieldStops = (route?: LatestRoutePlan): number =>
   route?.field_plan.reduce((total, technician) => total + technician.stops.length, 0) ?? 0;
 
 const actionLabel = (value: string): string =>
   value.replaceAll("_", " ").replace(/\b\w/g, (character) => character.toUpperCase());
+
+const validRouteStop = (stop: RouteStop): boolean =>
+  Number.isFinite(stop.job.latitude) && Number.isFinite(stop.job.longitude);
+
+const stopPosition = (stop: RouteStop): RoutePoint => [
+  stop.job.latitude,
+  stop.job.longitude,
+];
+
+const routePositions = (technician: TechnicianRoute): RoutePoint[] => [
+  serviceHubPosition,
+  ...technician.stops.filter(validRouteStop).map(stopPosition),
+];
+
+const RouteMapBounds = ({ route }: { route: LatestRoutePlan }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    const stopPoints = route.field_plan.flatMap((technician) =>
+      technician.stops.filter(validRouteStop).map(stopPosition),
+    );
+    const points = [serviceHubPosition, ...stopPoints];
+
+    if (stopPoints.length === 0) {
+      map.setView(serviceHubPosition, 11);
+      return;
+    }
+
+    map.fitBounds(points, { padding: [28, 28] });
+  }, [map, route]);
+
+  return null;
+};
 
 type KPIItemProps = {
   icon: React.ReactNode;
@@ -364,6 +402,7 @@ const EvidenceCard = ({
 };
 
 const RoutePreview = ({ route }: { route?: LatestRoutePlan }) => {
+  const [tilesUnavailable, setTilesUnavailable] = useState(false);
   const technicians = useMemo(() => {
     if (!route) {
       return [];
@@ -375,40 +414,6 @@ const RoutePreview = ({ route }: { route?: LatestRoutePlan }) => {
     }));
   }, [route]);
 
-  const routeNodes = useMemo(() => {
-    const allStops = technicians.flatMap((technician) =>
-      technician.stops.map((stop) => ({
-        technicianId: technician.technician_id,
-        technicianName: technician.technician_name ?? technician.technician_id,
-        sequence: stop.sequence,
-        siteId: stop.job.site_id,
-        arrival: stop.arrival,
-        latitude: stop.job.latitude,
-        longitude: stop.job.longitude,
-        color: technician.color,
-      })),
-    );
-
-    if (!allStops.length) {
-      return [];
-    }
-
-    const longitudes = allStops.map((stop) => stop.longitude);
-    const latitudes = allStops.map((stop) => stop.latitude);
-    const minLongitude = Math.min(...longitudes);
-    const maxLongitude = Math.max(...longitudes);
-    const minLatitude = Math.min(...latitudes);
-    const maxLatitude = Math.max(...latitudes);
-    const longitudeSpan = maxLongitude - minLongitude || 0.08;
-    const latitudeSpan = maxLatitude - minLatitude || 0.08;
-
-    return allStops.map((stop) => ({
-      ...stop,
-      x: 16 + ((stop.longitude - minLongitude) / longitudeSpan) * 68,
-      y: 78 - ((stop.latitude - minLatitude) / latitudeSpan) * 56,
-    }));
-  }, [technicians]);
-
   return (
     <Card
       className="sg-card sg-route-card"
@@ -417,47 +422,77 @@ const RoutePreview = ({ route }: { route?: LatestRoutePlan }) => {
     >
       {route ? (
         <div className="sg-route-layout">
-          <div className="sg-map-preview" aria-label="Pune route preview based on planned route stops">
-            <svg
-              className="sg-route-map-svg"
-              viewBox="0 0 100 100"
-              role="img"
-              aria-label="Technician route sketch"
+          <div className="sg-map-preview sg-real-map-preview" aria-label="Pune route preview based on planned route stops">
+            <MapContainer
+              center={serviceHubPosition}
+              zoom={11}
+              scrollWheelZoom={false}
+              className="sg-command-route-map"
             >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                eventHandlers={{
+                  tileerror: () => setTilesUnavailable(true),
+                  tileload: () => setTilesUnavailable(false),
+                }}
+              />
+              <RouteMapBounds route={route} />
               {technicians.map((technician) => {
-                const points = routeNodes
-                  .filter((node) => node.technicianId === technician.technician_id)
-                  .sort((left, right) => left.sequence - right.sequence)
-                  .map((node) => `${node.x},${node.y}`)
-                  .join(" ");
-                return points ? (
-                  <polyline
+                const positions = routePositions(technician);
+                return positions.length > 1 ? (
+                  <Polyline
                     key={technician.technician_id}
-                    points={points}
-                    fill="none"
-                    stroke={technician.color}
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    positions={positions}
+                    pathOptions={{
+                      color: technician.color,
+                      opacity: 0.96,
+                      weight: 4,
+                    }}
                   />
                 ) : null;
               })}
-              {routeNodes.map((node) => (
-                <g key={`${node.technicianId}-${node.sequence}`} transform={`translate(${node.x}, ${node.y})`}>
-                  <circle r="4.2" fill={node.color} stroke="#dcecff" strokeWidth="1.1" />
-                  <text y="1.4" textAnchor="middle" fill="#f2f7fc" fontSize="4.2" fontWeight="700">
-                    {node.sequence}
-                  </text>
-                </g>
-              ))}
-              <g transform="translate(50, 56)">
-                <circle r="4.4" fill="#2FD7A3" stroke="#dcecff" strokeWidth="1.1" />
-                <text y="1.4" textAnchor="middle" fill="#f2f7fc" fontSize="4.2" fontWeight="700">
-                  H
-                </text>
-              </g>
-            </svg>
-            <span className="sg-map-label">Pune</span>
+              <CircleMarker
+                center={serviceHubPosition}
+                radius={10}
+                pathOptions={{
+                  color: "#dcecff",
+                  fillColor: "#2FD7A3",
+                  fillOpacity: 1,
+                  weight: 2,
+                }}
+              >
+                <Tooltip permanent direction="center" className="sg-route-marker-label">H</Tooltip>
+                <Tooltip direction="top">Pune service hub</Tooltip>
+              </CircleMarker>
+              {technicians.flatMap((technician) =>
+                technician.stops.filter(validRouteStop).map((stop) => (
+                  <CircleMarker
+                    key={`${technician.technician_id}-${stop.sequence}`}
+                    center={stopPosition(stop)}
+                    radius={10}
+                    pathOptions={{
+                      color: "#dcecff",
+                      fillColor: technician.color,
+                      fillOpacity: 1,
+                      weight: 2,
+                    }}
+                  >
+                    <Tooltip permanent direction="center" className="sg-route-marker-label">
+                      {stop.sequence}
+                    </Tooltip>
+                    <Tooltip direction="top">
+                      {stop.job.site_id} · ETA {formatAnalysisTime(stop.arrival)}
+                    </Tooltip>
+                  </CircleMarker>
+                )),
+              )}
+            </MapContainer>
+            {tilesUnavailable ? (
+              <div className="sg-map-tile-warning" role="status">
+                Map tiles unavailable. Use the route list on the right.
+              </div>
+            ) : null}
             <div className="sg-route-legend" aria-label="Technician route legend">
               {technicians.map((technician) => (
                 <span key={technician.technician_id}>

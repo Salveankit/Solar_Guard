@@ -377,3 +377,20 @@ INFO:     Finished server process [20900]
 INFO:     Started server process [6772]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'app\database\session.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for background tasks to complete. (CTRL+C to force quit)
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [6772]
+WARNING:  WatchFiles detected changes in 'tests\unit\test_config.py'. Reloading...
+INFO:     Started server process [19768]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [19768]
+INFO:     Started server process [19888]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.

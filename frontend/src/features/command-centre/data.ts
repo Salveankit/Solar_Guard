@@ -361,8 +361,8 @@ export const incidentDonutOption = (
   graphic: [
     {
       type: "text",
-      left: showLegend ? "24%" : "44%",
-      top: showLegend ? "42%" : "40%",
+      left: showLegend ? "27.5%" : "center",
+      top: showLegend ? "43%" : "41%",
       style: {
         text: `${distribution.reduce((total, item) => total + item.value, 0)}`,
         fill: solarGuardTokens.colorText,
@@ -373,7 +373,7 @@ export const incidentDonutOption = (
     },
     {
       type: "text",
-      left: showLegend ? "23%" : "43%",
+      left: showLegend ? "27.5%" : "center",
       top: showLegend ? "56%" : "55%",
       style: {
         text: "Total",

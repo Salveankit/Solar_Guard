@@ -3,12 +3,18 @@ from __future__ import annotations
 import pytest
 
 from app.core.config import Settings, redact_url, require_test_database_url
-from app.database.session import build_engine
+from app.database.session import build_engine, get_engine
 
 
 def test_missing_database_url_raises() -> None:
     with pytest.raises(Exception, match="DATABASE_URL is required"):
         build_engine(None)
+
+
+def test_get_engine_reuses_engine_for_same_database_url() -> None:
+    engine = get_engine("sqlite:///:memory:")
+
+    assert get_engine("sqlite:///:memory:") is engine
 
 
 def test_missing_test_database_url_without_development_override_fails() -> None:

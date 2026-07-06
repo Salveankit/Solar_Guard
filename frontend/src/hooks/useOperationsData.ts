@@ -4,7 +4,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { AxiosError } from "axios";
+import { useLocation } from "react-router-dom";
 
 import { runAnalysis } from "../api/analysis";
 import { fetchServiceQueue } from "../api/decisions";
@@ -27,6 +27,78 @@ export const operationsQueryKeys = {
   sites: ["sites"] as const,
   siteDiagnostics: (siteId?: string) => ["site-diagnostics", siteId ?? ""] as const,
   dailyPlanReport: (routePlanId?: string) => ["daily-plan-report", routePlanId ?? ""] as const,
+};
+
+type RefreshScope =
+  | "all"
+  | "command-centre"
+  | "fleet"
+  | "diagnostics"
+  | "incidents"
+  | "service-queue"
+  | "technician-plan"
+  | "reports";
+
+const baseShellQueryKeys = [
+  operationsQueryKeys.health,
+  operationsQueryKeys.fleetSummary,
+] as const;
+const siteDiagnosticsRootQueryKey = [operationsQueryKeys.siteDiagnostics()[0]] as const;
+const dailyPlanReportRootQueryKey = [operationsQueryKeys.dailyPlanReport()[0]] as const;
+
+const refreshKeysByScope: Record<RefreshScope, readonly (readonly string[])[]> = {
+  all: [
+    operationsQueryKeys.health,
+    operationsQueryKeys.fleetSummary,
+    operationsQueryKeys.fleetTimeseries,
+    operationsQueryKeys.serviceQueue,
+    operationsQueryKeys.latestRoutePlan,
+    operationsQueryKeys.sites,
+    siteDiagnosticsRootQueryKey,
+    dailyPlanReportRootQueryKey,
+  ],
+  "command-centre": [
+    ...baseShellQueryKeys,
+    operationsQueryKeys.fleetTimeseries,
+    operationsQueryKeys.serviceQueue,
+    operationsQueryKeys.latestRoutePlan,
+  ],
+  fleet: [...baseShellQueryKeys, operationsQueryKeys.sites],
+  diagnostics: [
+    ...baseShellQueryKeys,
+    operationsQueryKeys.sites,
+    siteDiagnosticsRootQueryKey,
+  ],
+  incidents: [...baseShellQueryKeys, operationsQueryKeys.serviceQueue],
+  "service-queue": [
+    ...baseShellQueryKeys,
+    operationsQueryKeys.serviceQueue,
+    operationsQueryKeys.sites,
+    siteDiagnosticsRootQueryKey,
+  ],
+  "technician-plan": [
+    ...baseShellQueryKeys,
+    operationsQueryKeys.latestRoutePlan,
+    operationsQueryKeys.sites,
+  ],
+  reports: [
+    ...baseShellQueryKeys,
+    operationsQueryKeys.latestRoutePlan,
+    dailyPlanReportRootQueryKey,
+  ],
+};
+
+const refreshScopeForPathname = (pathname: string): RefreshScope => {
+  if (pathname === "/") return "command-centre";
+  if (pathname.startsWith("/fleet")) return "fleet";
+  if (pathname.startsWith("/sites/") || pathname.startsWith("/diagnostics")) {
+    return "diagnostics";
+  }
+  if (pathname.startsWith("/incidents")) return "incidents";
+  if (pathname.startsWith("/service-queue")) return "service-queue";
+  if (pathname.startsWith("/technician-plan")) return "technician-plan";
+  if (pathname.startsWith("/reports")) return "reports";
+  return "command-centre";
 };
 
 export const useApiHealth = () =>
@@ -80,20 +152,24 @@ export const useSiteDiagnostics = (siteId?: string) =>
     enabled: Boolean(siteId),
   });
 
-export const invalidateOperationsQueries = (queryClient: ReturnType<typeof useQueryClient>) =>
-  Promise.all([
-    queryClient.invalidateQueries({ queryKey: operationsQueryKeys.health }),
-    queryClient.invalidateQueries({ queryKey: operationsQueryKeys.fleetSummary }),
-    queryClient.invalidateQueries({ queryKey: operationsQueryKeys.fleetTimeseries }),
-    queryClient.invalidateQueries({ queryKey: operationsQueryKeys.serviceQueue }),
-    queryClient.invalidateQueries({ queryKey: operationsQueryKeys.latestRoutePlan }),
-    queryClient.invalidateQueries({ queryKey: operationsQueryKeys.sites }),
-  ]);
+export const invalidateOperationsQueries = (
+  queryClient: ReturnType<typeof useQueryClient>,
+  scope: RefreshScope = "all",
+) =>
+  Promise.all(
+    refreshKeysByScope[scope].map((queryKey) =>
+      queryClient.invalidateQueries({ queryKey }),
+    ),
+  );
 
 export const useRefreshOperations = () => {
   const queryClient = useQueryClient();
+  const location = useLocation();
   return () => {
-    void invalidateOperationsQueries(queryClient);
+    void invalidateOperationsQueries(
+      queryClient,
+      refreshScopeForPathname(location.pathname),
+    );
   };
 };
 
@@ -131,21 +207,12 @@ export type OperationsShellStatus = {
   lastUpdated?: Date;
 };
 
-const isNotFoundError = (error?: unknown) =>
-  error instanceof AxiosError && error.response?.status === 404;
-
 export const useOperationsShellStatus = (): OperationsShellStatus => {
   const health = useApiHealth();
   const fleetSummary = useFleetSummary();
-  const fleetTimeseries = useFleetTimeseries();
-  const serviceQueue = useServiceQueue();
-  const latestRoutePlan = useLatestRoutePlan();
   const shellQueryKeys = [
     operationsQueryKeys.health[0],
     operationsQueryKeys.fleetSummary[0],
-    operationsQueryKeys.fleetTimeseries[0],
-    operationsQueryKeys.serviceQueue[0],
-    operationsQueryKeys.latestRoutePlan[0],
   ] as const;
   const activeFetches = useIsFetching({
     predicate: (query) => {
@@ -160,9 +227,6 @@ export const useOperationsShellStatus = (): OperationsShellStatus => {
   const lastUpdatedValues = [
     health.dataUpdatedAt,
     fleetSummary.dataUpdatedAt,
-    fleetTimeseries.dataUpdatedAt,
-    serviceQueue.dataUpdatedAt,
-    latestRoutePlan.dataUpdatedAt,
   ].filter((value) => value > 0);
   const lastUpdated = lastUpdatedValues.length
     ? new Date(Math.max(...lastUpdatedValues))
@@ -171,12 +235,8 @@ export const useOperationsShellStatus = (): OperationsShellStatus => {
   const summaryUnavailable = !fleetSummary.data && (fleetSummary.isLoading || health.isLoading);
   const hardError =
     Boolean(health.error) ||
-    Boolean(fleetSummary.error) ||
-    Boolean(serviceQueue.error) ||
-    Boolean(fleetTimeseries.error);
+    Boolean(fleetSummary.error);
   const healthUnavailable = health.data?.database === "unavailable";
-  const partialError =
-    Boolean(latestRoutePlan.error) && !isNotFoundError(latestRoutePlan.error);
 
   if (summaryUnavailable) {
     return {
@@ -213,7 +273,7 @@ export const useOperationsShellStatus = (): OperationsShellStatus => {
     };
   }
 
-  if (hardError || partialError) {
+  if (hardError) {
     return {
       kind: "partial",
       hasCompletedAnalysis,

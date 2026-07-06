@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Generator
+from functools import lru_cache
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
@@ -13,7 +14,7 @@ from app.core.errors import SolarGuardError
 def get_engine(database_url: str | None = None) -> Engine:
     settings = get_settings()
     resolved_url = database_url or settings.database_url
-    return build_engine(resolved_url)
+    return _cached_engine(resolved_url)
 
 
 def build_engine(database_url: str | None) -> Engine:
@@ -24,6 +25,11 @@ def build_engine(database_url: str | None) -> Engine:
             code="DB_CONFIG_MISSING",
         )
     return create_engine(_normalise_database_url(resolved_url), pool_pre_ping=True)
+
+
+@lru_cache(maxsize=4)
+def _cached_engine(database_url: str | None) -> Engine:
+    return build_engine(database_url)
 
 
 def _normalise_database_url(database_url: str) -> str:

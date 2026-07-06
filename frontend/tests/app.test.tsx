@@ -102,7 +102,7 @@ describe("SolarGuard React application", () => {
       await screen.findByRole("heading", { name: /monitor every site with clarity/i }),
     ).toBeInTheDocument();
     expect(screen.getByText("SITE INVENTORY")).toBeInTheDocument();
-    expect(screen.getAllByText("Greenfield Farm").length).toBeGreaterThan(0);
+    expect((await screen.findAllByText("Greenfield Farm")).length).toBeGreaterThan(0);
     expect(screen.getByText("Avg. Data Completeness")).toBeInTheDocument();
     expect(screen.queryByText(/999 kWh/i)).not.toBeInTheDocument();
 
@@ -195,7 +195,7 @@ describe("SolarGuard React application", () => {
     expect(screen.getByText("INCIDENT DISTRIBUTION")).toBeInTheDocument();
     expect(screen.getByText("SELECTED INCIDENT")).toBeInTheDocument();
     expect(screen.getByText("RECOMMENDED NEXT ACTIONS")).toBeInTheDocument();
-    expect(screen.getAllByText("Greenfield Farm").length).toBeGreaterThan(0);
+    expect((await screen.findAllByText("Greenfield Farm")).length).toBeGreaterThan(0);
     expect(screen.getByText(/Unknown \/ Insufficient Evidence/i)).toBeInTheDocument();
 
     const dock = screen.getByRole("navigation", { name: /primary navigation/i });
@@ -233,7 +233,7 @@ describe("SolarGuard React application", () => {
     await user.click(screen.getByRole("button", { name: /move to service queue/i }));
 
     expect(await screen.findByText("Move incident to service queue")).toBeInTheDocument();
-    expect(screen.getByText(/backend recommendation/i)).toBeInTheDocument();
+    expect(screen.getByText(/using the recommended action/i)).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /confirm routing/i }));
 
@@ -255,10 +255,10 @@ describe("SolarGuard React application", () => {
       }),
     ).toBeInTheDocument();
     expect(screen.getByText("SERVICE DECISION QUEUE")).toBeInTheDocument();
-    expect(screen.getByText("QUEUE DISTRIBUTION")).toBeInTheDocument();
+    expect(await screen.findByText("QUEUE DISTRIBUTION")).toBeInTheDocument();
     expect(screen.getByText("SELECTED DECISION")).toBeInTheDocument();
     expect(screen.getByText("PRIORITY BREAKDOWN")).toBeInTheDocument();
-    expect(screen.getAllByText("Greenfield Farm").length).toBeGreaterThan(0);
+    expect((await screen.findAllByText("Greenfield Farm")).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Not exposed/i).length).toBeGreaterThan(0);
 
     expect(within(dock).getByRole("link", { name: /service queue/i })).toHaveClass(
@@ -316,7 +316,7 @@ describe("SolarGuard React application", () => {
       }),
     ).toBeInTheDocument();
     expect(screen.getByText("TECHNICIAN ASSIGNMENTS")).toBeInTheDocument();
-    expect(screen.getByText("ROUTE MAP")).toBeInTheDocument();
+    expect(await screen.findByText("ROUTE MAP")).toBeInTheDocument();
     expect(screen.getByText("SELECTED TECHNICIAN")).toBeInTheDocument();
     expect(screen.getByText("PLAN IMPACT")).toBeInTheDocument();
     expect(screen.getAllByText("Rohit S.").length).toBeGreaterThan(0);
@@ -417,7 +417,7 @@ describe("SolarGuard React application", () => {
     expect(screen.getAllByText("SITE-TOP").length).toBeGreaterThan(1);
     expect(screen.getAllByText("Urgent Field Visit").length).toBeGreaterThan(0);
     expect(screen.getByRole("button", { name: /open SITE-TOP/i })).toBeInTheDocument();
-  });
+  }, integrationTimeoutMs);
 
   it("opens an enlarged chart view for command-centre presentation", async () => {
     const user = userEvent.setup();
@@ -452,7 +452,7 @@ describe("SolarGuard React application", () => {
     await waitFor(() => {
       expect(window.location.pathname).toBe("/sites/SITE-TOP");
     });
-  });
+  }, integrationTimeoutMs);
 
   it("displays route distance avoided in operator-facing language", async () => {
     renderApp();

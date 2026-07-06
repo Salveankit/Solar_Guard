@@ -129,7 +129,7 @@ const formatTime = (value?: string | null): string => {
 };
 
 const detectedSince = (incident: IncidentRow): string =>
-  `${formatTime(incident.created_at)} analysis`;
+  `Reported ${formatTime(incident.created_at)}`;
 
 const enrichIncidents = (
   items: ServiceDecision[],
@@ -413,7 +413,7 @@ const EvidencePreview = ({ incident }: { incident: IncidentRow }) => (
         />
       </div>
     </Tooltip>
-    <Tooltip title="Backend evidence summary">
+    <Tooltip title="Evidence summary">
       <div className="sg-evidence-text-thumb">
         <InfoCircleOutlined />
         <span>{incident.supporting_evidence[0] ?? "Evidence unavailable"}</span>
@@ -473,7 +473,7 @@ const SelectedIncident = ({ incident }: { incident?: IncidentRow }) => (
             ? "Telemetry or heartbeat evidence indicates a data-quality incident. Missing readings are not treated as zero production."
             : incident.issueBucket === "unknown"
               ? "Available telemetry does not support a reliable probable-cause classification. Additional evidence is required."
-              : incident.supporting_evidence[0] ?? "Backend diagnostics supplied supporting evidence for this probable issue."}
+              : incident.supporting_evidence[0] ?? "Supporting evidence is being prepared for this incident."}
         </p>
         <EvidencePreview incident={incident} />
       </>
@@ -859,8 +859,8 @@ export const IncidentsPage = () => {
 
       <div className="sg-state-ribbon">
         <CheckCircleOutlined />
-        Incident triage uses backend service decisions. Unknown or insufficient evidence
-        remains visible and missing telemetry is never shown as zero generation.
+        Incident triage keeps uncertain cases visible. Missing site readings are treated
+        as data gaps, not zero production.
         {queueNotice ? <strong role="status">{queueNotice}</strong> : null}
         <button type="button" onClick={openDiagnostics}>
           Open selected diagnostics <ArrowRightOutlined />
@@ -880,7 +880,7 @@ export const IncidentsPage = () => {
           <div className="sg-incident-confirmation">
             <p>
               Route <strong>{selectedIncident.site?.site_name ?? selectedIncident.site_id}</strong>{" "}
-              using the backend recommendation:
+              using the recommended action:
             </p>
             <dl>
               <div>
