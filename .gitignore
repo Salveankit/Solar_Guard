@@ -9,5 +9,5 @@ frontend/dist/
 misc
 .env
 node_modules
-.codex-runtime/
-vite-logs/
+.codex-runtime
+.vite-logs
