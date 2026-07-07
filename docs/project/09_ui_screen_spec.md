@@ -1,4 +1,4 @@
-# 09 — UI and Screen Specification
+# 09 - UI and Screen Specification
 
 ## 1. Product-design objective
 
@@ -6,282 +6,257 @@ The dashboard must look like an operations tool, not a presentation slide or gen
 
 > What requires attention, why, and what should the operations team do next?
 
+The active implemented UI is the React/Vite application in `frontend/`. The Streamlit dashboard remains retained fallback POC code.
+
 ## 2. Global layout
 
-### Header
+### Header and shell
 
-- SolarGuard logo/name
-- `POC — Simulated Data` badge
-- latest analysis timestamp
-- dataset/model status
+- SolarGuard logo/name.
+- Search where relevant.
+- latest refresh/analysis timestamp.
+- refresh action.
+- date/time context.
+- primary navigation.
 
 ### Navigation
 
-1. Command Centre
-2. Site Diagnostics
-3. Service Queue
-4. Technician Plan
+Implemented React routes:
+
+1. `/` - Command Centre
+2. `/fleet` - Fleet Sites
+3. `/diagnostics` and `/sites/{site_id}` - Site Diagnostics
+4. `/incidents` - Incidents
+5. `/service-queue` - Service Queue
+6. `/technician-plan` - Technician Plan
+7. `/reports` - Reports
 
 ### Global design rules
 
 - Compact but readable spacing.
-- Neutral background and clear hierarchy.
+- Cards must not leave large dead space when neighboring content has meaningful data.
 - Severity shown using icon + text + colour, never colour alone.
 - Units visible beside values.
 - No dead navigation items or placeholder controls.
 - No editable controls that do nothing.
-- No raw JSON on primary screens.
+- No raw JSON, stack traces, or backend-engineering implementation notes on primary screens.
+- No claim of live weather, live inverter feeds, live traffic, or guaranteed savings.
+- Charts and maps must clearly represent backend outputs from the current synthetic demo dataset.
 
-## 3. Screen 1 — Daily Operations Command Centre
+## 3. Command Centre
 
 ### Purpose
 
 Provide the morning fleet decision summary.
 
-### Top KPI row
+### Required content
 
-- Monitored sites
-- Healthy
-- Require attention
-- Remote checks
-- Field visits recommended
-- Energy value at risk
+- Hero command-centre summary.
+- Site and weather context based on stored/demo data.
+- Fleet KPI strip.
+- Important fleet alert/notice when evidence is missing or insufficient.
+- Expected vs actual fleet generation trend.
+- Incident distribution.
+- Today's operations summary.
+- Service priority queue preview.
+- Top priority evidence.
+- Technician route preview.
 
-### Primary action
+### Layout guidance
 
-`Generate Tomorrow's O&M Plan`
+- Expected vs actual generation should receive enough width and height to read trends.
+- Incident distribution and today's operations should remain compact summaries.
+- Service queue preview should use horizontal room for table readability.
+- Top priority evidence should remain concise and aligned with route/queue content.
+- Route preview should show a real Leaflet/OpenStreetMap context when tiles are available, with textual fallback.
 
-Behavior:
+## 4. Fleet Sites
 
-- disabled until analysis exists;
-- runs/refreshes route optimisation;
-- shows success summary and links to Technician Plan.
+### Purpose
 
-### Main content
+Help the user scan all sites and open the correct diagnostic context quickly.
 
-#### A. Fleet attention summary
+### Required content
 
-Stacked or horizontal status visual:
+- Fleet summary metrics.
+- Site list/table with status, probable issue, priority, and action context.
+- Filtering or search suitable for 30 synthetic sites.
+- Navigation into site diagnostics.
 
-- healthy;
-- communication;
-- underperformance;
-- unknown.
+### Rules
 
-#### B. Top priorities table
+- Status values must match backend diagnostics.
+- Unknown/insufficient-evidence sites must stay visible.
+- The page must avoid presenting unavailable live telemetry as if it is current real-world data.
 
-Columns:
-
-- rank;
-- site;
-- probable issue;
-- priority;
-- value at risk;
-- recommended action.
-
-Maximum 5–8 rows on overview.
-
-#### C. Expected vs actual fleet trend
-
-Daily or hourly aggregate, clearly labelled.
-
-#### D. Action split
-
-- monitor;
-- remote check;
-- field visit;
-- cleaning;
-- collect more data.
-
-### Empty/loading/error states
-
-- No analysis: show `Load demo data` and `Run analysis` steps.
-- Analysis running: progress indicator with current phase.
-- No incidents: positive healthy-fleet state, not empty chart.
-- API failure: concise retry guidance.
-
-## 4. Screen 2 — Site Diagnostics
+## 5. Site Diagnostics
 
 ### Purpose
 
 Explain one site's performance and recommended action.
 
-### Controls
-
-- site selector/search;
-- analysis date/range;
-- quick navigation to previous/next priority site.
-
 ### Header panel
 
 - site ID/name;
-- capacity;
-- service region;
+- region;
 - status badge;
-- priority badge;
-- data completeness.
+- coverage/data quality;
+- latest analysis timestamp;
+- probable issue, confidence, energy loss/value, recommended action.
 
 ### Performance chart
 
 Required series:
 
-- expected generation/power;
-- actual generation/power;
+- expected generation;
+- actual generation;
 - irradiance on secondary axis or aligned panel;
-- highlighted anomaly windows.
+- highlighted anomaly windows when available.
 
-Avoid overcrowding. Default to meaningful 1–3 day window with option for 30-day trend.
+Avoid overcrowding. Default to a meaningful current diagnostic range and keep legends, axes, and units readable.
 
-### Diagnostic card
+### Diagnostic summary
 
 Display:
 
 - probable issue;
 - confidence label and score;
-- evidence bullets;
-- limitations;
-- recommended first action;
-- field visit required: yes/no.
+- evidence;
+- recommended next action;
+- field visit required when applicable.
 
-### Impact card
+### Supporting sections
 
-- expected energy;
-- actual energy;
-- energy loss;
-- value at risk;
-- estimated recoverable value.
+- diagnostic evidence;
+- site and analysis context;
+- event and diagnostic history;
+- recommended next actions.
 
-### Priority breakdown
+### Layout guidance
 
-Show six score components and total. A small horizontal breakdown is preferred over a gauge.
+- The expected vs actual chart may expand vertically when the lower left column has available space.
+- Event history should align visually with recommended next actions where possible.
+- Remove redundant service decision snapshots if they repeat existing decision data without adding user value.
 
-### Cleaning panel
-
-Only show for applicable sites:
-
-- 7-day projected loss;
-- cleaning cost;
-- rain expectation;
-- decision and reason.
-
-## 5. Screen 3 — Service Decision Queue
+## 6. Incidents
 
 ### Purpose
 
-Allow operations manager to review and filter all incidents.
+Show operational incidents without exposing internal/debug language.
 
-### Summary strip
+### Required content
 
-- total incidents;
-- critical/high;
-- remote actions;
-- field jobs;
-- unknown/insufficient data.
+- Incident summary.
+- Incident list or table.
+- Distribution by probable issue/status.
+- Link into diagnostics or service queue.
 
-### Filters
+### Rules
 
-- priority;
-- probable issue;
-- action type;
-- visit required;
-- service region;
-- confidence;
-- complaint status.
+- Use "probable issue", "evidence", and "recommended action".
+- Do not show backend phrases, internal route state, raw analysis service names, or debug notes.
+- Unknown/insufficient-evidence incidents must remain visible.
+
+## 7. Service Queue
+
+### Purpose
+
+Allow the operations manager to review, filter, and act on ranked service decisions.
+
+### Required content
+
+- Hero summary without duplicating the same KPI strip immediately below unless the second strip adds new information.
+- Queue KPI strip.
+- Service decision queue table.
+- Queue distribution.
+- Selected decision details.
+- Priority breakdown.
+
+### Layout guidance
+
+- The service decision queue is the primary content and should receive the most horizontal space.
+- If vertical space is available, increase visible rows instead of paginating at five rows by default.
+- Supporting cards such as distribution, selected decision, and priority breakdown should be stacked or moved below when they constrain table readability.
+- Small KPI/detail cards can be placed horizontally at the bottom when that improves the table area.
 
 ### Table columns
 
-- rank;
 - priority label/score;
 - site;
 - probable issue;
 - confidence;
 - persistence;
-- energy loss;
-- value at risk;
-- complaint age/SLA;
+- energy value at risk;
+- complaint status;
 - recommended action;
 - visit required.
-
-### Row interaction
-
-Selecting a row opens the site diagnostic page or an in-page details drawer.
 
 ### Rules
 
 - Default sort by priority score descending.
 - Unknown incidents remain visible and are not silently dropped.
 - Values must match Site Diagnostics and export exactly.
+- Pagination should not create unnecessary empty space on common laptop screens.
 
-## 6. Screen 4 — Technician Plan
+## 8. Technician Plan
 
 ### Purpose
 
 Present the actionable next-day field-service plan.
 
-### Header summary
+### Required content
 
 - plan date;
 - technicians used;
 - jobs assigned/unassigned;
 - optimised distance;
 - distance saved;
-- expected recoverable energy/value.
-
-### Technician route cards
-
-For each technician:
-
-- name and skills;
-- shift;
-- total route distance;
-- total estimated time;
-- ordered stops.
-
-Each stop displays:
-
-- sequence;
-- site ID;
-- issue;
-- priority;
-- recommended task;
-- estimated job duration;
-- required skill/part note.
+- expected recoverable energy/value;
+- technician route cards;
+- route map;
+- unassigned job reasons;
+- daily O&M export.
 
 ### Map
 
-- service hub marker;
-- numbered route stops;
-- separate visual distinction per technician;
-- textual route remains usable if tiles fail.
+- Use Leaflet/OpenStreetMap tiles in the React UI.
+- Show service hub marker.
+- Show numbered route stops.
+- Distinguish technician routes.
+- Keep textual route details usable if tiles fail.
+- Do not call live traffic or paid map APIs.
 
-### Unassigned jobs
+## 9. Reports
 
-Show reason:
+### Purpose
 
-- no matching skill;
-- insufficient shift capacity;
-- invalid coordinates;
-- lower priority than selected jobs.
+Provide report preview/download for the daily O&M plan.
 
-### Export
+### Required content
 
-Button: `Download Daily O&M Plan`
+- latest route/report context;
+- CSV download action;
+- report rows consistent with visible route plan and service queue.
 
-## 7. UI-to-API mapping
+## 10. UI-to-API mapping
 
 | UI need | API |
 |---|---|
+| Health | GET `/health` |
 | Load demo | POST `/api/data/load-demo` |
 | Run analysis | POST `/api/analysis/run` |
+| Run expected generation only | POST `/api/analysis/run-expected-generation` |
 | Command KPIs | GET `/api/fleet/summary` |
+| Fleet trend | GET `/api/fleet/timeseries` |
 | Site list | GET `/api/sites` |
-| Site diagnosis | GET `/api/sites/{id}/diagnostics` |
+| Site details | GET `/api/sites/{site_id}` |
+| Site diagnosis | GET `/api/sites/{site_id}/diagnostics` |
 | Queue | GET `/api/service-queue` |
-| Cleaning | GET `/api/sites/{id}/cleaning-decision` |
-| Route | POST `/api/routes/optimize` and GET latest |
-| Download | GET `/api/reports/daily-plan` |
+| Route optimise | POST `/api/routes/optimize` |
+| Latest route | GET `/api/routes/latest` |
+| Download CSV | GET `/api/reports/daily-plan` |
 
-## 8. Copy guidelines
+## 11. Copy guidelines
 
 Use:
 
@@ -291,26 +266,32 @@ Use:
 - `Energy value at risk`
 - `Estimated recoverable value`
 - `Insufficient evidence`
+- `Latest analysis`
+- `Synthetic demo data`
 
 Avoid:
 
 - `AI proved`
 - `Confirmed fault`
 - `Guaranteed savings`
+- `Backend analysis`
+- `Backend rows`
+- `Frontend recalculation`
 - `Revenue loss` for all customer types
 - unexplained `AI score`
 
-## 9. Responsive priority
+## 12. Responsive priority
 
-Desktop/laptop is primary. Basic tablet compatibility is useful. Mobile optimisation is out of scope.
+Desktop/laptop is primary. Basic tablet compatibility is useful. Mobile optimisation is outside the current POC scope.
 
-## 10. UI acceptance checklist
+## 13. UI acceptance checklist
 
-- Four pages only.
+- Active React routes load without raw exceptions.
 - No dead controls.
 - No inconsistent values.
 - No page recalculates backend logic.
+- No backend-engineering text leakage in the user-facing UI.
 - Charts have labels, units, and meaningful default ranges.
-- Tables handle zero and many rows.
+- Tables handle zero, five, and many rows without wasting available page space.
 - Synthetic-data disclosure is visible but unobtrusive.
-- One-click navigation from fleet priority to site evidence to route assignment.
+- One-click navigation from fleet priority to site evidence to route assignment remains possible.

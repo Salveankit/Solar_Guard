@@ -163,9 +163,9 @@ Next phase:
 
 > The analytics uses a canonical schema. Each vendor would require an adapter that maps its fields into that schema. The POC proves the standardised layer and CSV path; it does not claim existing support for every vendor API.
 
-### “Why FastAPI and Streamlit?”
+### “Why FastAPI and React/Vite?”
 
-> Streamlit enables a fast polished POC, while FastAPI demonstrates reusable backend services and keeps business logic out of the UI. It is enough architecture to show capability without adding microservice overhead.
+> FastAPI demonstrates reusable backend services and keeps business logic out of the UI. The active React/Vite dashboard gives a more polished operational presentation for leadership review, while the original Streamlit dashboard remains retained fallback POC code. This is enough architecture to show capability without adding microservice overhead.
 
 ### “What is the main risk?”
 

@@ -10,6 +10,8 @@
 - Monetary values in INR
 - Version path is optional for POC; include `api_version` in health response
 
+Current implemented route modules are `health.py`, `data.py`, `analysis.py`, `operations.py`, `routes.py`, and `reports.py`. Planned endpoints are explicitly marked as deferred below.
+
 ## 2. Standard error response
 
 ```json
@@ -89,7 +91,7 @@ Loads pre-generated demo files.
 
 Multipart upload of one or more canonical files.
 
-This endpoint is deferred for the first POC sprint. The first demo path uses `/api/data/load-demo`; when upload is implemented later, uploaded files must be validated with the same canonical data contract as bundled demo files.
+**Current status:** deferred. The implemented demo path uses `/api/data/load-demo`; when upload is implemented later, uploaded files must be validated with the same canonical data contract as bundled demo files.
 
 **Response**
 
@@ -110,8 +112,7 @@ This endpoint is deferred for the first POC sprint. The first demo path uses `/a
 
 ```json
 {
-  "analysis_date": "2026-07-03",
-  "force_recompute": false
+  "analysis_date": "2026-07-03"
 }
 ```
 
@@ -131,13 +132,38 @@ This endpoint is deferred for the first POC sprint. The first demo path uses `/a
 
 ### `GET /api/analysis/runs/latest`
 
-Returns latest completed run metadata.
+**Current status:** deferred. The current UI reads operational state from fleet/site/queue/route endpoints instead of this endpoint.
+
+### `POST /api/analysis/run-expected-generation`
+
+Runs only the expected-generation step and persists expected-generation rows.
+
+**Request**
+
+```json
+{
+  "analysis_date": "2026-07-03"
+}
+```
+
+**200 response**
+
+```json
+{
+  "analysis_run_id": "RUN-20260703093000",
+  "status": "completed",
+  "expected_generation_rows": 86400,
+  "eligible_rows": 43200,
+  "model_version": "expected-xgb-v1",
+  "configuration_version": "poc-v1"
+}
+```
 
 ## 6. Fleet
 
 ### `GET /api/fleet/summary`
 
-Optional query: `analysis_run_id`.
+Returns current fleet summary for the latest stored operational state.
 
 **200 response**
 
@@ -158,17 +184,15 @@ Optional query: `analysis_run_id`.
 }
 ```
 
+### `GET /api/fleet/timeseries`
+
+Returns backend-prepared fleet expected/actual/irradiance series used by the Command Centre trend chart.
+
 ## 7. Sites
 
 ### `GET /api/sites`
 
-Query parameters:
-
-- `status`
-- `service_region`
-- `customer_type`
-- `limit`
-- `offset`
+Returns current site summary rows. The current implementation does not require pagination for the 30-site demo dataset.
 
 **Response item**
 
@@ -189,7 +213,7 @@ Returns site master and current summary.
 
 ### `GET /api/sites/{site_id}/telemetry`
 
-Query parameters: `start`, `end`, `granularity`.
+**Current status:** deferred. The current diagnostics chart is served through `/api/sites/{site_id}/diagnostics`.
 
 ### `GET /api/sites/{site_id}/diagnostics`
 
@@ -253,9 +277,12 @@ Query parameters: `start`, `end`, `granularity`.
 Query parameters:
 
 - `priority`
-- `action_type`
-- `visit_required`
-- `service_region`
+- `probable_issue`
+- `remote_action`
+- `cleaning_candidate`
+- `field_visit`
+- `insufficient_evidence`
+- `actionable_only`
 
 **Response**
 
@@ -284,6 +311,8 @@ Query parameters:
 
 ### `GET /api/sites/{site_id}/cleaning-decision`
 
+**Current status:** deferred as a standalone endpoint. Cleaning candidacy appears in service-decision outputs where applicable.
+
 **Response**
 
 ```json
@@ -307,11 +336,9 @@ Query parameters:
 
 ```json
 {
+  "planning_date": "2026-07-04",
   "analysis_run_id": "RUN-20260703-001",
-  "plan_date": "2026-07-04",
-  "technician_ids": ["TECH-01", "TECH-02"],
-  "include_priority_labels": ["Critical", "High"],
-  "include_medium_if_capacity": true
+  "replace_existing_plan": true
 }
 ```
 
@@ -374,7 +401,7 @@ Response: downloadable UTF-8 CSV.
 ## 13. API acceptance checks
 
 - Swagger opens and documents all endpoints.
-- Example payloads match actual schemas.
+- Example payloads match implemented schemas or are explicitly marked deferred.
 - Pydantic rejects invalid enums and missing required fields.
 - No endpoint exposes fault ground truth.
 - Frontend can complete the entire demo through API calls only.

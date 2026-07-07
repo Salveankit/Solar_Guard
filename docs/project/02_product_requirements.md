@@ -40,6 +40,22 @@ Needs to:
 9. Route planner assigns jobs to technicians.
 10. Manager downloads the daily O&M plan.
 
+## 3.1 Current user-facing interface
+
+The active implemented interface is the React/Vite dashboard in `frontend/`. It is backed by FastAPI and should not recalculate backend business logic.
+
+Implemented routes:
+
+- `/` - Command Centre
+- `/fleet` - Fleet Sites
+- `/diagnostics` and `/sites/{site_id}` - Site Diagnostics
+- `/incidents` - Incidents
+- `/service-queue` - Service Queue
+- `/technician-plan` - Technician Plan
+- `/reports` - Reports
+
+The Streamlit dashboard under `dashboard/` remains retained POC/fallback code and is not the primary interface being polished.
+
 ## 4. Functional requirements
 
 ### FR-01 — Load demo data
@@ -229,6 +245,8 @@ No user-facing score may appear without its major inputs or evidence.
 - Clear labels and units.
 - Do not rely only on colour to convey severity.
 - Tables must remain readable at common laptop resolution.
+- User-facing copy must avoid backend-engineering leakage such as "backend analysis", raw stack traces, raw JSON, or internal implementation notes.
+- Refresh should be page-aware and must not invalidate unrelated heavy data when the current route does not need it.
 
 ## 6. POC-level business acceptance scenarios
 

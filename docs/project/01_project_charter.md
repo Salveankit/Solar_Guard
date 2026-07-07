@@ -21,7 +21,7 @@ The POC must demonstrate that the team can combine:
 - energy-value and service-priority calculations;
 - technician assignment and route optimisation;
 - FastAPI backend services;
-- a polished operational dashboard;
+- a polished operational dashboard in the active React/Vite frontend, with the original Streamlit dashboard retained as fallback POC code;
 - deterministic testing and reproducible deployment.
 
 ## 4. Intended audience
@@ -99,7 +99,7 @@ These are **estimated POC outputs**, not production claims:
 - missing telemetry becomes a communication issue, not an outage;
 - injected incidents are detected by scenario-level validation;
 - service queue and route planner use a single backend source of truth;
-- all four UI pages load without dead controls or raw exceptions;
+- active UI routes load without dead controls, backend-engineering copy leakage, or raw exceptions;
 - one-command or documented two-command local startup.
 
 ## 10. Constraints
@@ -122,6 +122,7 @@ These are **estimated POC outputs**, not production claims:
 - Fault outputs are probable categories supported by evidence.
 - `fault_ground_truth.csv` is hidden from the operational pipeline.
 - A Neon/PostgreSQL database is available before the demo, with credentials supplied through environment configuration and not committed to the repository.
+- Current charts and weather context are derived from synthetic demo data and backend analysis outputs; they are not live weather or inverter feeds.
 
 ## 12. Governance
 

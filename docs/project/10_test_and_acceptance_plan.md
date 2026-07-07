@@ -13,11 +13,12 @@ This plan validates workflow behavior; it does not claim production field accura
 3. ML/data-science tests
 4. Business-rule tests
 5. API integration tests
-6. End-to-end tests
-7. UI acceptance tests
-8. Demo resilience tests
-9. Scenario validation against hidden ground truth
-10. Database connectivity and configuration tests
+6. Frontend unit/build tests
+7. End-to-end tests
+8. UI acceptance tests
+9. Demo resilience tests
+10. Scenario validation against hidden ground truth
+11. Database connectivity and configuration tests
 
 Database integration tests must run against `TEST_DATABASE_URL`, which must point to a separate Neon test branch or test database. They must not connect to or mutate the presentation Neon database.
 
@@ -172,16 +173,40 @@ Pass criteria:
 - no raw exception;
 - same input produces same output.
 
+## 8.1 Current verification commands
+
+Backend:
+
+```bash
+uv run pytest
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm run lint
+npm run build
+npm test
+```
+
+Documentation-only changes may be checked with:
+
+```bash
+git diff --check
+```
+
 ## 9. UI acceptance
 
 ### Global
 
-- four pages load;
+- active React routes load;
 - POC data disclosure visible;
 - no dead links/buttons;
 - no clipped critical text at standard laptop size;
 - units shown;
 - loading/empty/error states work.
+- no backend-engineering text, raw JSON, or raw exception appears in user-facing UI.
 
 ### Command Centre
 

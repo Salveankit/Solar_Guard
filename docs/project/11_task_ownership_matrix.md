@@ -10,7 +10,7 @@ The plan assumes a compact team. Roles may be combined, but accountability must 
 - ARCH — Solution Architect
 - ML — AI/ML + Data Engineer
 - BE — Backend Engineer
-- FE — Streamlit/Product Engineer
+- FE — Frontend/Product Engineer
 - QA — QA Engineer
 - DOMAIN — Solar-domain reviewer
 
@@ -36,11 +36,11 @@ The plan assumes a compact team. Roles may be combined, but accountability must 
 | BE-03 | Implement API endpoints | BE | ARCH/QA | BE-02 | FastAPI app | Swagger and contracts pass |
 | OPT-01 | Implement distance matrix | BE | QA | DATA-02 | distance service | Symmetric valid matrix |
 | OPT-02 | Implement OR-Tools assignment | BE | ARCH/QA | ML-05/OPT-01/DATA-06 | route plan | Skills/capacity respected |
-| FE-01 | Build API client and shell | FE | BE | BE-03 | Streamlit skeleton | API health works |
-| FE-02 | Command Centre | FE | PM/QA | FE-01 | Page 1 | KPIs reconcile |
-| FE-03 | Site Diagnostics | FE | ML/QA | FE-01 | Page 2 | Evidence and charts correct |
-| FE-04 | Service Queue | FE | PM/QA | FE-01 | Page 3 | Filters/sort/navigation work |
-| FE-05 | Technician Plan | FE | BE/QA | OPT-02/FE-01 | Page 4 | Route + export work |
+| FE-01 | Build API client and shell | FE | BE | BE-03 | React/Vite shell and retained Streamlit fallback | API health works |
+| FE-02 | Command Centre | FE | PM/QA | FE-01 | Command Centre route | KPIs reconcile |
+| FE-03 | Site Diagnostics and Fleet Sites | FE | ML/QA | FE-01 | Diagnostics/fleet routes | Evidence and charts correct |
+| FE-04 | Incidents and Service Queue | FE | PM/QA | FE-01 | Incident/queue routes | Filters/sort/navigation work |
+| FE-05 | Technician Plan and Reports | FE | BE/QA | OPT-02/FE-01 | Technician/report routes | Route + export work |
 | QA-01 | Unit/data tests | QA | Owners | DATA/ML modules | Pytest suite | Critical calculations covered |
 | QA-02 | Scenario validation | QA | ML/DOMAIN | ML-05 | scenario report | Mandatory scenarios pass |
 | QA-03 | API/E2E tests | QA | BE/FE | BE-03/FE pages | integration report | Full path passes |
@@ -159,7 +159,7 @@ Legend: R Responsible, A Accountable, C Consulted, I Informed.
 
 ### FE handoff
 
-- four complete pages;
+- complete active React routes;
 - API-only data flow;
 - empty/error/loading states;
 - download interaction.

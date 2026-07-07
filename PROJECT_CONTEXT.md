@@ -1,90 +1,144 @@
 # SolarGuard Project Context
 
-## 1. Project identity
+## 1. Project Identity
 
 SolarGuard is a rooftop-solar performance and field-service decision intelligence POC.
 
-It analyses fleet-level solar telemetry and converts it into an explainable daily operations and maintenance plan.
+It converts standardized, synthetic rooftop-solar telemetry into an explainable daily operations and maintenance plan for a Pune-region rooftop fleet.
 
-The application is designed to demonstrate the team's ability to combine:
+The project demonstrates the team's ability to combine:
 
-* data engineering;
-* solar-domain modelling;
-* time-series machine learning;
-* anomaly detection;
-* explainable decision logic;
-* backend API development;
-* operational dashboards;
-* technician route optimisation.
+* deterministic demo-data generation;
+* canonical data validation;
+* solar-domain feature engineering;
+* expected-generation modelling;
+* persistent anomaly detection;
+* explainable probable-cause reasoning;
+* energy-loss and service-priority calculation;
+* FastAPI backend services;
+* Neon/PostgreSQL persistence through SQLAlchemy;
+* operational dashboard presentation;
+* OR-Tools technician route optimisation;
+* daily O&M plan export.
 
-SolarGuard is not intended to be presented as a production-ready autonomous fault-diagnosis system.
-
----
-
-## 2. Business problem
-
-A rooftop-solar EPC or installer may manage hundreds or thousands of geographically distributed installations.
-
-An operations manager cannot manually inspect every inverter dashboard every day.
-
-The manager needs to know:
-
-1. Which sites are genuinely underperforming?
-2. Is the underperformance likely caused by weather or an operational issue?
-3. Which cases can be checked remotely?
-4. Which sites require technician visits?
-5. Which cases have the highest recoverable energy impact?
-6. How should tomorrow's technician visits be grouped and routed?
-
-SolarGuard converts raw operational data into these decisions.
+SolarGuard is not a production fault-diagnosis platform and must not be presented as one.
 
 ---
 
-## 3. Primary users
+## 2. Current Implementation Shape
+
+The implemented repository currently contains both the originally specified Streamlit dashboard and a richer React/Vite frontend.
+
+Authoritative project documents still specify **FastAPI + Streamlit** as the approved POC architecture. The current active user-facing interface in this workspace is the **React/Vite frontend** under `frontend/`.
+
+Current major components:
+
+```text
+data/raw CSV demo dataset
+        |
+        v
+validation and load-demo service
+        |
+        v
+Neon/PostgreSQL tables
+        |
+        v
+FastAPI backend and service layer
+        |
+        +--> React/Vite operational dashboard in frontend/
+        |
+        +--> Streamlit dashboard code retained in dashboard/
+```
+
+The backend remains the source of truth. The React frontend displays API results and should not recalculate diagnosis, priority, energy loss, or route optimisation.
+
+---
+
+## 3. Business Problem
+
+A rooftop-solar EPC or service operator cannot manually inspect every inverter dashboard each day.
+
+The operations manager needs to know:
+
+1. Which sites genuinely require attention?
+2. Is low generation likely weather-related, data-related, or operational?
+3. Which cases should be checked remotely?
+4. Which cases justify a technician visit?
+5. Which cases carry the highest recoverable energy impact?
+6. How should tomorrow's technician visits be assigned and ordered?
+
+SolarGuard converts raw telemetry and weather-context data into these decisions.
+
+---
+
+## 4. Primary Users
 
 ### EPC Operations Manager
 
-The operations manager supervises the solar fleet.
-
-The manager uses SolarGuard to:
+The operations manager uses SolarGuard to:
 
 * review fleet health;
 * identify sites requiring attention;
-* understand probable issue categories;
-* review evidence behind recommendations;
+* inspect probable issue categories;
+* review evidence and confidence;
 * estimate energy value at risk;
-* prioritise service jobs;
-* approve the next-day technician plan.
+* prioritize service actions;
+* approve the technician plan;
+* export the daily O&M plan.
 
 ### Service Technician
 
-The technician receives an ordered daily visit plan.
-
 The technician needs:
 
-* site identifier;
+* assigned site list;
+* visit sequence;
 * probable issue;
 * reason for the visit;
 * recommended diagnostic action;
 * required skill or equipment;
 * estimated job duration;
-* visit sequence.
+* route distance and ETA context.
 
-The POC does not include a separate technician mobile application.
+The POC does not include a separate technician mobile app.
 
 ---
 
-## 4. Core product question
+## 5. Core Product Question
 
 Every major feature must help answer:
 
-> Which solar sites need attention tomorrow, why do they need attention, and what is the most efficient action?
+> Which solar sites need attention, why do they need attention, and what is the most efficient next action?
 
 Features that do not materially support this question are outside the POC scope.
 
 ---
 
-## 5. End-to-end product flow
+## 6. Demo Data and Truth Boundary
+
+The default POC represents:
+
+* 30 rooftop-solar installations;
+* Pune and nearby regions;
+* 30 days of historical telemetry;
+* 15-minute telemetry readings;
+* two technicians;
+* one service hub;
+* injected operational incidents;
+* communication, sudden outage, gradual underperformance, time-specific underperformance, and unknown/insufficient-evidence states.
+
+The dataset is synthetic but operationally realistic and internally linked.
+
+Important truth boundaries:
+
+* There is no live inverter API integration.
+* There is no live weather API integration.
+* Weather values shown in the UI come from stored demo weather data and current analysis outputs.
+* OpenStreetMap tiles are used only for map rendering; route optimisation does not depend on map APIs.
+* `fault_ground_truth.csv` is evaluation-only and must not drive user-facing diagnosis.
+
+---
+
+## 7. End-to-End Product Flow
 
 ```text
 Site metadata
@@ -93,452 +147,161 @@ Site metadata
       +
 Historical weather data
       +
+Weather forecast data
+      +
 Service history
       +
 Technician information
-            ↓
+            |
+            v
 Data ingestion and validation
-            ↓
-Data completeness and quality assessment
-            ↓
+            |
+            v
+Data quality assessment
+            |
+            v
 Expected-generation estimation
-            ↓
+            |
+            v
 Actual-versus-expected comparison
-            ↓
+            |
+            v
 Persistent anomaly detection
-            ↓
+            |
+            v
 Explainable probable-cause reasoning
-            ↓
+            |
+            v
 Energy-loss and recoverable-value estimation
-            ↓
-Service-priority ranking
-            ↓
+            |
+            v
+Service-priority queue
+            |
+            v
 Remote-check versus field-visit decision
-            ↓
+            |
+            v
 Technician assignment and route optimisation
-            ↓
-Daily O&M plan
+            |
+            v
+Daily O&M plan CSV
 ```
 
 ---
 
-## 6. Demonstration scenario
+## 8. Backend Architecture
 
-The default POC represents:
+Backend language and runtime:
 
-* 30 rooftop-solar installations;
-* Pune and nearby regions;
-* 30 days of historical telemetry;
-* 15-minute readings;
-* two technicians;
-* one service hub;
-* ten injected operational incidents;
-* four primary incident patterns;
-* one unknown or insufficient-evidence state.
+* Python 3.11
+* FastAPI
+* SQLAlchemy
+* Pydantic
+* Pandas and NumPy
+* pvlib
+* XGBoost and scikit-learn
+* OR-Tools
+* PyYAML configuration
 
-The dataset is synthetic but must remain operationally realistic and internally consistent.
+Important backend folders:
 
----
+* `app/api/` - FastAPI routes
+* `app/services/` - application and domain services
+* `app/repositories/` - database access
+* `app/database/` - SQLAlchemy models and engine/session setup
+* `app/schemas/` - canonical Pydantic schemas
+* `config/poc_config.yaml` - thresholds and business assumptions
+* `scripts/load_demo.py` - demo-data loading entry point
 
-## 7. Core domain entities
+Implemented API areas:
 
-### Site
+* `GET /health`
+* `POST /api/data/load-demo`
+* `POST /api/analysis/run`
+* `POST /api/analysis/run-expected-generation`
+* `GET /api/fleet/summary`
+* `GET /api/fleet/timeseries`
+* `GET /api/sites`
+* `GET /api/sites/{site_id}`
+* `GET /api/sites/{site_id}/diagnostics`
+* `GET /api/service-queue`
+* `POST /api/routes/optimize`
+* `GET /api/routes/latest`
+* `GET /api/reports/daily-plan`
 
-A rooftop-solar installation.
-
-Important attributes include:
-
-* site ID;
-* installed capacity;
-* geographic coordinates;
-* inverter vendor and model;
-* panel orientation;
-* commissioning date;
-* energy-value assumption;
-* service region.
-
-### Telemetry reading
-
-A time-stamped operational measurement from a site.
-
-Examples:
-
-* generation;
-* AC power;
-* DC voltage;
-* DC current;
-* AC voltage;
-* inverter temperature;
-* inverter status;
-* alarm code.
-
-### Weather observation
-
-Weather information associated with a site or weather zone.
-
-Important values include:
-
-* irradiance;
-* temperature;
-* cloud cover;
-* rainfall;
-* wind speed.
-
-### Incident
-
-A detected period of abnormal or unavailable operation.
-
-An incident has:
-
-* site;
-* start and end time;
-* probable issue category;
-* severity;
-* persistence;
-* confidence;
-* supporting evidence;
-* recommended action.
-
-### Service job
-
-An operational action created from an incident.
-
-A service job may require:
-
-* remote check;
-* cleaning;
-* technical inspection;
-* physical technician visit;
-* additional data collection.
-
-### Technician
-
-A field-service resource with:
-
-* service hub;
-* shift timing;
-* skill set;
-* maximum visits;
-* assigned route.
+The SQLAlchemy engine is cached/reused globally through `app/database/session.py` to avoid repeated connection setup latency.
 
 ---
 
-## 8. Incident taxonomy
+## 9. Frontend Architecture
 
-SolarGuard uses the following operational categories.
+The active frontend is a React/Vite application in `frontend/`.
 
-### Communication or data failure
+Current frontend stack:
 
-Telemetry is missing, stale or unavailable.
+* React 19
+* Vite
+* TypeScript
+* Ant Design
+* TanStack React Query
+* Axios
+* Zod response validation
+* ECharts
+* Leaflet and React Leaflet
+* Papa Parse
+* Vitest and Testing Library
 
-This must not be treated as zero solar generation.
+The frontend uses route-level lazy imports to reduce initial load cost.
 
-Typical action:
+Implemented React routes:
 
-* check data logger;
-* check network connectivity;
-* contact customer remotely;
-* avoid immediate dispatch unless necessary.
+* `/` - Command Centre
+* `/fleet` - Fleet Sites
+* `/diagnostics` - Diagnostics default view
+* `/sites/:siteId` - Site Diagnostics
+* `/incidents` - Incidents
+* `/service-queue` - Service Queue
+* `/technician-plan` - Technician Plan
+* `/reports` - Reports
 
-### Sudden production outage
-
-Expected output is meaningful, but actual output suddenly drops close to zero.
-
-Possible causes may include:
-
-* inverter shutdown;
-* grid outage;
-* AC-side interruption;
-* protective trip.
-
-The product reports a probable category, not a confirmed component failure.
-
-### Gradual persistent underperformance
-
-Output decreases gradually and remains below the weather-normalised expectation.
-
-Possible causes may include:
-
-* soiling;
-* vegetation;
-* system degradation;
-* sensor drift.
-
-Cleaning should be recommended only when economically justified.
-
-### Time-specific underperformance
-
-Loss repeats during similar hours across multiple days.
-
-Possible causes may include:
-
-* recurring shade;
-* obstruction;
-* orientation-related effects.
-
-### Unknown or insufficient evidence
-
-Available data does not support a reliable probable-cause conclusion.
-
-This is a valid and mandatory output state.
+Refresh behavior is page-aware. The shell no longer invalidates all heavy operational data on every refresh.
 
 ---
 
-## 9. Intelligence model
+## 10. UI Screen Model
 
-SolarGuard does not use one model for everything.
-
-### Expected-generation estimation
-
-Purpose:
-
-Estimate how much energy a healthy site should have produced under the observed conditions.
-
-Approach:
-
-```text
-Solar and weather-aware features
-            +
-Historical site behaviour
-            ↓
-Expected-generation model
-```
-
-The POC uses:
-
-* solar-position and domain features;
-* weather and irradiance;
-* site capacity and orientation;
-* XGBoost regression;
-* a simple physical or formula-based baseline for comparison.
-
-### Anomaly detection
-
-Anomaly detection compares actual output with expected output.
-
-Core measures:
-
-```text
-Residual = Actual generation - Expected generation
-```
-
-```text
-Performance ratio = Actual generation / Expected generation
-```
-
-An alert requires:
-
-* sufficient expected generation;
-* meaningful underperformance;
-* persistence across consecutive intervals.
-
-A single low reading should not automatically create an incident.
-
-### Probable-cause reasoning
-
-The POC uses explainable business and telemetry rules.
-
-It does not train a production fault classifier on synthetic labels.
-
-Every probable cause should include:
-
-* issue category;
-* confidence;
-* supporting evidence;
-* data limitations;
-* recommended next action.
-
-### Priority scoring
-
-The priority score combines:
-
-* recoverable energy impact;
-* incident persistence;
-* diagnostic confidence;
-* customer complaint urgency;
-* SLA or warranty risk;
-* route-clustering benefit.
-
-The score must be explainable. It must not be presented as an unexplained magic number.
-
-### Route optimisation
-
-Only service jobs requiring physical visits enter the route optimiser.
-
-The optimiser considers:
-
-* technician skills;
-* visit limits;
-* shift duration;
-* job duration;
-* job priority;
-* site coordinates;
-* service-hub location.
-
-Route optimisation is performed using OR-Tools.
-
----
-
-## 10. Business terminology
-
-Use:
-
-* energy loss;
-* estimated energy value at risk;
-* estimated savings impact;
-* recoverable energy value;
-* probable issue;
-* recommended action;
-* service priority.
-
-Avoid:
-
-* guaranteed revenue loss;
-* confirmed fault;
-* exact component failure;
-* autonomous repair;
-* production-validated accuracy.
-
-Residential rooftop systems may represent electricity savings rather than direct energy-sale revenue.
-
----
-
-## 11. Application architecture
-
-```text
-Streamlit dashboard
-        ↓ HTTP
-FastAPI application
-        ↓
-Application services
-        ↓
-Neon/PostgreSQL persistence
-        ↓
-Analytics and optimisation modules
-```
-
-Core backend services:
-
-* data ingestion;
-* data validation;
-* expected generation;
-* anomaly detection;
-* probable-cause reasoning;
-* loss estimation;
-* priority scoring;
-* route optimisation;
-* report generation.
-
-This is a modular monolith.
-
-It is not a microservices architecture.
-
----
-
-## 12. Source-of-truth rule
-
-FastAPI backend services are the source of truth for:
-
-* diagnostics;
-* energy loss;
-* probable causes;
-* confidence;
-* priority scores;
-* service recommendations;
-* technician routes.
-
-The Streamlit dashboard must not independently recalculate these values.
-
-The dashboard displays backend results.
-
-This prevents conflicting numbers between:
-
-* API responses;
-* dashboard pages;
-* downloaded reports.
-
----
-
-## 13. Data truth rules
-
-The following distinctions must always be preserved.
-
-### Missing is not zero
-
-Missing telemetry means the system did not receive a reading.
-
-Zero generation means a reading was received and the measured output was zero.
-
-These represent different operational conditions.
-
-### Weather-driven loss is not automatically a fault
-
-Low output during low irradiance or heavy cloud cover should not automatically create an underperformance incident.
-
-### Underperformance is not confirmed failure
-
-A performance deviation may indicate a probable operational issue, but available telemetry may not identify the exact physical cause.
-
-### Synthetic ground truth is evaluation-only
-
-`fault_ground_truth.csv` is used to validate injected POC scenarios.
-
-It must not be used by the production-facing diagnostic pipeline to directly determine the answer.
-
----
-
-## 14. POC output
-
-The primary output is a daily O&M plan.
-
-Example:
-
-```text
-Site: MH-142
-Status: Underperforming
-Expected generation: 23.4 kWh
-Actual generation: 14.2 kWh
-Energy loss: 9.2 kWh
-
-Probable issue:
-Sudden inverter or grid-side interruption
-
-Confidence:
-82%
-
-Evidence:
-- Irradiance remained high
-- Output dropped close to zero
-- Deviation persisted for six intervals
-
-Recommended action:
-Perform remote inverter and grid checks.
-Dispatch a technician if the issue remains unresolved.
-
-Priority:
-High
-```
-
-The fleet-level output should also include:
-
-* remote-check cases;
-* physical-visit cases;
-* cleaning candidates;
-* insufficient-data cases;
-* technician assignments;
-* route order;
-* estimated distance;
-* distance saved compared with a naive route.
-
----
-
-## 15. User interface mental model
-
-### Daily Operations Command Centre
+### Command Centre
 
 Answers:
 
-> What happened across the fleet, and what requires attention?
+> What is the current fleet situation and what needs attention first?
+
+Current UI includes:
+
+* hero summary;
+* site/weather overview from stored analysis data;
+* KPI strip;
+* expected versus actual fleet generation chart;
+* incident distribution donut;
+* today's operations summary;
+* service priority queue preview;
+* top priority evidence;
+* technician route preview with real OpenStreetMap tiles and backend route stop order.
+
+### Fleet Sites
+
+Answers:
+
+> Which sites are healthy, degraded, unknown, or need operational attention?
+
+Current UI includes:
+
+* fleet overview;
+* site inventory;
+* site filters;
+* site cards/table views;
+* map-style cluster interaction;
+* navigation into diagnostics.
 
 ### Site Diagnostics
 
@@ -546,11 +309,48 @@ Answers:
 
 > Why was this site flagged, and what evidence supports the recommendation?
 
-### Service Decision Queue
+Current UI includes:
+
+* site issue header;
+* expected versus actual generation chart;
+* diagnostic summary;
+* evidence strip;
+* site and analysis context;
+* event and diagnostic history;
+* recommended next actions.
+
+### Incidents
 
 Answers:
 
-> Which actions should be completed first?
+> Which incidents need triage, and what action should be taken next?
+
+Current UI includes:
+
+* incident overview;
+* incident KPIs;
+* incident queue;
+* incident distribution;
+* selected incident panel;
+* recommended next actions;
+* service-queue routing confirmation.
+
+Frontend copy should avoid backend-engineering language such as "backend recommendation" or "API-supplied" for non-technical users.
+
+### Service Queue
+
+Answers:
+
+> Which service decisions should be reviewed first?
+
+Current UI includes:
+
+* queue summary;
+* ranked service decision queue;
+* filters;
+* selected decision details;
+* priority breakdown;
+* action buttons to diagnostics and technician planning.
 
 ### Technician Plan
 
@@ -558,103 +358,326 @@ Answers:
 
 > Who should visit which sites, and in what order?
 
-Every screen should support one of these questions.
+Current UI includes:
+
+* technician plan summary;
+* assignment table;
+* real Leaflet/OpenStreetMap route map;
+* service hub and numbered stops;
+* technician-specific route colours;
+* selected technician detail;
+* plan impact;
+* daily O&M plan download.
+
+### Reports
+
+Answers:
+
+> What operational output can be exported from the current plan?
+
+Current UI includes:
+
+* report library;
+* selected report detail;
+* CSV preview;
+* daily O&M plan download.
+
+Only CSV export is currently implemented. PDF, XLSX, scheduling, and email delivery are outside the current POC capability.
 
 ---
 
-## 16. POC success criteria
+## 11. Graph and Data Reality
 
-The POC is successful when it demonstrates that the team can:
+The main charts are backend-driven, not static presentation images.
 
-1. create and validate realistic solar telemetry;
-2. estimate expected generation;
-3. distinguish weather-related reduction from persistent abnormal performance;
-4. separate communication failure from zero production;
-5. produce explainable probable-cause outputs;
-6. estimate energy and business impact;
-7. rank service actions;
-8. optimise technician routes;
-9. expose results through FastAPI;
-10. present the workflow through a usable dashboard.
+Examples:
 
-Production-grade accuracy is not the success criterion.
+* Command Centre generation chart reads `/api/fleet/timeseries`.
+* Diagnostics generation chart reads `/api/sites/{site_id}/diagnostics`.
+* Incident and queue distributions read `/api/service-queue`.
+* Technician route maps read `/api/routes/latest`.
+* Report preview reads `/api/reports/daily-plan`.
+
+These graphs are real for the current synthetic demo dataset. They are not live production telemetry.
+
+The UI must not imply:
+
+* live weather API data;
+* live inverter API data;
+* confirmed hardware faults;
+* guaranteed savings;
+* road-following traffic-aware routing.
 
 ---
 
-## 17. Non-goals
+## 12. Intelligence Model
+
+SolarGuard does not use one model for everything.
+
+### Expected Generation
+
+Expected generation estimates how much energy a healthy site should have produced under observed conditions.
+
+Inputs include:
+
+* site capacity;
+* panel orientation;
+* site efficiency factor;
+* irradiance and weather context;
+* solar position features;
+* historical telemetry.
+
+The project includes:
+
+* deterministic baseline expected-generation logic;
+* XGBoost model artifacts in `models/`;
+* model metrics in `models/model_metrics.json`.
+
+### Anomaly Detection
+
+Anomaly detection compares actual output with expected output.
+
+Core measures:
+
+```text
+Residual = Actual generation - Expected generation
+Performance ratio = Actual generation / Expected generation
+```
+
+An incident requires sufficient daylight, meaningful expected output, material underperformance, and persistence.
+
+### Probable-Cause Reasoning
+
+Probable-cause classification uses explainable rules and evidence, not an LLM and not hidden synthetic ground truth.
+
+Supported categories:
+
+* communication or data failure;
+* sudden production outage;
+* gradual persistent underperformance;
+* time-specific underperformance;
+* unknown or insufficient evidence.
+
+### Priority and Service Decision
+
+Priority combines:
+
+* energy impact;
+* recoverable value;
+* persistence;
+* confidence;
+* customer complaint or SLA context;
+* route benefit.
+
+The service decision separates:
+
+* remote check;
+* monitor;
+* collect more data;
+* schedule cleaning;
+* technician visit.
+
+### Route Optimisation
+
+Only physical-visit jobs enter OR-Tools optimisation.
+
+The route optimiser considers:
+
+* technician skills;
+* visit limits;
+* shift duration;
+* job duration;
+* job priority;
+* site coordinates;
+* service hub location.
+
+Leaflet maps display route order and approximate lines. They do not calculate route order.
+
+---
+
+## 13. Data Truth Rules
+
+### Missing Is Not Zero
+
+Missing telemetry means no reading was received.
+
+Zero generation means a reading was received and measured generation was zero.
+
+These states must remain separate in backend logic and UI copy.
+
+### Weather-Driven Loss Is Not Automatically a Fault
+
+Low output during low irradiance, heavy cloud, or rain should not automatically create an underperformance incident.
+
+### Underperformance Is Not a Confirmed Failure
+
+The system reports probable issue categories. It must not claim confirmed component failure.
+
+### Synthetic Ground Truth Is Evaluation-Only
+
+`fault_ground_truth.csv` validates injected POC scenarios. It must not drive operational diagnosis.
+
+---
+
+## 14. Business Terminology
+
+Use:
+
+* probable issue;
+* supporting evidence;
+* confidence;
+* recommended action;
+* energy loss;
+* energy value at risk;
+* recoverable energy;
+* service priority;
+* field visit candidate;
+* remote-check candidate;
+* unknown or insufficient evidence.
+
+Avoid:
+
+* confirmed fault;
+* exact component failure;
+* guaranteed savings;
+* autonomous repair;
+* live weather unless a live integration exists;
+* AI proved;
+* revenue loss as a blanket phrase for all sites.
+
+---
+
+## 15. Persistence and Data Assets
+
+The POC uses Neon/PostgreSQL as the primary persistence layer.
+
+Important database-backed datasets include:
+
+* sites;
+* telemetry;
+* weather history;
+* weather forecast;
+* service history;
+* technicians;
+* analysis runs;
+* expected generation results;
+* incident candidates;
+* service decisions;
+* route plans and route stops.
+
+Important local assets include:
+
+* `data/raw/*.csv` - canonical demo inputs;
+* `models/expected_generation_model.joblib` - expected-generation model artifact;
+* `models/feature_schema.json` - model feature schema;
+* `models/model_metrics.json` - model evaluation metrics;
+* `config/poc_config.yaml` - thresholds, costs, and business assumptions.
+
+Secrets such as `DATABASE_URL` belong in `.env` and must not be committed.
+
+---
+
+## 16. Testing and Quality
+
+Current test coverage includes:
+
+* backend unit tests with Pytest;
+* database/integration sprint tests;
+* frontend unit/integration tests with Vitest and Testing Library;
+* frontend linting through ESLint;
+* frontend production build through TypeScript and Vite.
+
+Common verification commands:
+
+```bash
+uv run pytest
+cd frontend && npm run lint
+cd frontend && npm run build
+cd frontend && npm test
+```
+
+Performance-sensitive frontend behavior already implemented:
+
+* SQLAlchemy engine reuse on the backend;
+* route-level lazy imports in the React app;
+* page-aware refresh invalidation;
+* shell status limited to lightweight global queries.
+
+---
+
+## 17. Non-Goals
 
 The POC does not include:
 
-* production authentication;
+* authentication;
 * role-based access;
 * customer mobile application;
 * live inverter APIs;
-* multiple inverter adapters;
-* live weather integration;
-* streaming infrastructure;
+* live weather APIs;
+* real-time traffic;
+* WhatsApp, SMS, or email delivery;
+* payment or billing;
+* chatbot;
 * Kafka;
 * Airflow;
 * Redis;
 * Celery;
 * Kubernetes;
-* real-time traffic;
-* LLM chatbot;
-* autonomous hardware control;
-* guaranteed fault diagnosis;
-* production model monitoring.
+* production monitoring;
+* automated model retraining;
+* guaranteed diagnosis.
 
-These are possible future phases, not current requirements.
+These may be future roadmap items, not current implementation scope.
 
 ---
 
-## 18. Technology mental model
+## 18. Engineering Invariants
 
-| Responsibility            | Technology            |
-| ------------------------- | --------------------- |
-| Language                  | Python 3.11           |
-| Backend API               | FastAPI               |
-| Validation                | Pydantic              |
-| Data processing           | Pandas and NumPy      |
-| Solar-domain features     | pvlib                 |
-| Expected-generation model | XGBoost               |
-| ML utilities              | scikit-learn          |
-| Persistence               | Neon/PostgreSQL and SQLAlchemy |
-| Dashboard                 | Streamlit             |
-| Charts                    | Plotly                |
-| Route optimisation        | OR-Tools              |
-| Map visualisation         | Folium                |
-| Tests                     | Pytest                |
-| Code quality              | Ruff                  |
-| Packaging                 | Docker Compose        |
+The following must remain true:
 
-Technology changes require an explicit architectural decision. Coding agents should not silently replace this stack.
-
----
-
-## 19. Engineering invariants
-
-The following must remain true throughout development:
-
-1. Missing telemetry is never silently converted to zero.
-2. Fault output is described as probable, not confirmed.
-3. Unknown or insufficient evidence is supported.
-4. Fault-injected intervals are excluded from healthy-model training.
-5. Synthetic ground truth is not used as a diagnostic shortcut.
-6. Business thresholds are configuration-driven.
-7. Backend services remain the source of truth.
-8. Dashboard and downloadable reports use the same backend results.
+1. FastAPI/backend services remain the source of truth.
+2. The frontend does not recalculate diagnosis, priority, energy loss, or routes.
+3. Missing telemetry is never silently converted to zero generation.
+4. Fault outputs are probable, not confirmed.
+5. Unknown or insufficient evidence is a valid output state.
+6. Synthetic ground truth is not used as a diagnostic shortcut.
+7. Thresholds and business assumptions come from configuration.
+8. Reports and UI use the same backend results.
 9. Route optimisation receives only physical-visit jobs.
-10. External paid APIs are not required for the core demo.
-11. The same input and fixed seed produce deterministic output.
-12. Existing working functionality must not be broken by unrelated changes.
+10. Core analytics and routing do not require paid external APIs.
+11. Same input and fixed seed should produce deterministic outputs.
+12. No dead buttons or placeholder features should appear in the active UI.
 
 ---
 
-## 20. Authoritative detailed documents
+## 19. Current Startup Model
 
-Detailed contracts are stored under:
+Typical local backend startup:
 
-`docs/project/`
+```bash
+uv run uvicorn app.main:app --reload --port 8000
+```
+
+Typical React frontend startup:
+
+```bash
+cd frontend
+npm run dev
+```
+
+Legacy/approved Streamlit fallback code remains under `dashboard/`:
+
+```bash
+uv run streamlit run dashboard/Home.py --server.port 8501
+```
+
+The primary demo path requires `DATABASE_URL` to point to the configured Neon/PostgreSQL database.
+
+---
+
+## 20. Authoritative Detailed Documents
+
+Detailed contracts are stored under `docs/project/`.
 
 Use:
 
@@ -671,6 +694,4 @@ Use:
 * `11_task_ownership_matrix.md` for dependencies;
 * `12_demo_script.md` for presentation flow.
 
-This file provides the project mental model.
-
-The detailed documents provide implementation authority.
+If this context file conflicts with the formal project documents, follow the precedence defined in `AGENTS.md` and report the contradiction before implementation.
