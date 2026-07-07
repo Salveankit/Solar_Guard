@@ -5,7 +5,7 @@ from fastapi import APIRouter
 from app.core.config import get_settings
 from app.database.session import check_database_ready
 
-router = APIRouter(tags=["health"])
+router = APIRouter(prefix="/api", tags=["health"])
 
 
 @router.get("/health")

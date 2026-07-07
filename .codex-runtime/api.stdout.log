@@ -632,3 +632,14 @@ INFO:     127.0.0.1:62916 - "GET /api/fleet/timeseries HTTP/1.1" 200 OK
 INFO:     127.0.0.1:64171 - "GET /api/service-queue HTTP/1.1" 200 OK
 INFO:     127.0.0.1:65344 - "GET /api/fleet/timeseries HTTP/1.1" 200 OK
 INFO:     127.0.0.1:57695 - "GET /api/routes/latest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60744 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62893 - "GET /api/fleet/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54996 - "GET /api/routes/latest HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64573 - "GET /api/fleet/timeseries HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54915 - "GET /api/service-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62584 - "GET /api/sites HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53078 - "GET /api/sites/MH-119/diagnostics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57742 - "GET /api/fleet/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49342 - "GET /api/service-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57211 - "GET /api/sites HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63135 - "GET /api/sites/MH-126/diagnostics HTTP/1.1" 200 OK
